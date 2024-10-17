@@ -1,0 +1,11 @@
+{
+  "name": "cycloeval2",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter server build && pnpm --filter client dev & pnpm --filter server start",
+    "build": "pnpm --filter client build && pnpm --filter server build",
+    "start": "pnpm --filter server start",
+    "clean": "rm -rf client/dist server/dist"
+  }
+}

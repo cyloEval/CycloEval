@@ -1,0 +1,11 @@
+# node modules
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# dist folders
+client/dist/
+server/dist/
+
+# lockfiles
+pnpm-lock.yaml
