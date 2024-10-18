@@ -26,8 +26,8 @@ jobs:
           npm install -g pnpm
           pnpm install
           cd server
-          pnpm prisma generate
           pnpm build
+          pnpm prisma generate
           pnpm start
 #pnpm run test --if-present
 
