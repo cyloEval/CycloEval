@@ -23,7 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npn install pnpm
+          npm install -g pnpm
           pnpm install
           cd server
           pnpm prisma generate
