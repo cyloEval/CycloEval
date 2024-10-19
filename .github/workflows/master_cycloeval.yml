@@ -25,6 +25,8 @@ jobs:
           cd server
           pnpm build
           pnpm prisma generate
+          cd ..
+          npm run dev
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
