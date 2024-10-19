@@ -1,6 +1,9 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 
+const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || '0.0.0.0';
+
 const app = express();
 const prisma = new PrismaClient();
 
@@ -26,6 +29,6 @@ app.post('/users', async (req, res) => {
     }
 });
 
-app.listen(3001, () => {
-    console.log('Server running on http://localhost:3001');
+app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}`);
 });
