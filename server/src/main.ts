@@ -6,6 +6,10 @@ const prisma = new PrismaClient();
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.send('Hello cycloEval');
+});
+
 app.get('/users', async (req, res) => {
     const users = await prisma.user.findMany();
     res.json(users);
