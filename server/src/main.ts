@@ -1,7 +1,11 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3001;
+
+const PORT: number = parseInt(process.env.PORT || "3000");
+
+
+
 const HOST = process.env.HOST || "localhost";
 
 const app = express();
@@ -19,7 +23,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
-  const users = await getusers().then((users) => res.json(users));
+  const users = await getusers()
+  .then((users) => res.json(users))
+  .then(() => prisma.$disconnect())
+  .catch((error) => res.json({ error: error.message }));
 
 });
 
