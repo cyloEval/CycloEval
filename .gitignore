@@ -9,3 +9,5 @@ server/dist/
 
 # lockfiles
 pnpm-lock.yaml
+
+.env

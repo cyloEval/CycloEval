@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.get("/users", async (req, res) => {
   const users = await getusers().then((users) => res.json(users));
+
 });
 
 app.listen(PORT, HOST, () => {
