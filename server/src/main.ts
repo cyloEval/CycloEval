@@ -2,7 +2,7 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3001;
-const HOST = process.env.HOST || "0.0.0.0";
+const HOST = process.env.HOST || "localhost";
 
 const app = express();
 const prisma = new PrismaClient();
