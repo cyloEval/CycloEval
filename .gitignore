@@ -11,3 +11,5 @@ server/dist/
 pnpm-lock.yaml
 
 .env
+server/coverage
+  
