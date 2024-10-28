@@ -3,6 +3,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 import MapComponent from './components/Map'
+import ImportJsonButton from './components/ImportJsonButton'
 
 function App() {
 
@@ -18,6 +19,10 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <MapComponent />
+      <br></br>
+      <div className='flex justify-center items-center mt-4'>
+        <ImportJsonButton />
+      </div>
     </>
   )
 }

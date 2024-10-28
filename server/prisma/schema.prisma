@@ -65,5 +65,5 @@ model File {
   uploadAt DateTime @default(now()) @updatedAt
   userId   Int
   user     User     @relation(fields: [userId], references: [userId])
-  content  Bytes
+  content  String
 }
