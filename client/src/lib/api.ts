@@ -1,5 +1,5 @@
 
-export const api = "https://cycloeval.onrender.com"
+export const api = "localhost:3000"
 
 export const postJsonDataUrl = api + "/process-data"
 

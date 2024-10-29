@@ -1,9 +1,8 @@
 from fastapi import FastAPI, HTTPException, Request
-from sqlalchemy import create_engine, Column, Integer, Float, DateTime, ForeignKey
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from typing import List
 from data_processing import parse_json_data, process_sensor_data, detect_shocks
 from models import User, Coordinate, DetectedShock
 import json
@@ -14,6 +13,13 @@ DATABASE_URL = "sqlite:///./test.db"
 Base = declarative_base()
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 async def read_root():

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -16,7 +16,6 @@ class User(Base):
     files = relationship("File", back_populates="user")
     routes = relationship("Route", back_populates="user")
 
-
 class Coordinate(Base):
     __tablename__ = "coordinate"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -27,7 +26,6 @@ class Coordinate(Base):
     location = relationship("Location", back_populates="coordinate", uselist=False)
     detected_shock = relationship("DetectedShock", back_populates="coordinate", uselist=False)
 
-
 class Location(Base):
     __tablename__ = "location"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -36,7 +34,6 @@ class Location(Base):
 
     route = relationship("Route", back_populates="bounds")
     coordinate = relationship("Coordinate", back_populates="location")
-
 
 class DetectedShock(Base):
     __tablename__ = "detected_shock"
@@ -49,7 +46,6 @@ class DetectedShock(Base):
     user = relationship("User", back_populates="detected_shocks")
     coordinate = relationship("Coordinate", back_populates="detected_shock")
 
-
 class Route(Base):
     __tablename__ = "route"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -59,7 +55,6 @@ class Route(Base):
 
     user = relationship("User", back_populates="routes")
     bounds = relationship("Location", back_populates="route")
-
 
 class File(Base):
     __tablename__ = "file"
