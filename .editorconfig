@@ -44,3 +44,9 @@ trim_trailing_whitespace = false  # Important pour éviter les sauts de ligne au
 [*.html]
 indent_style = space
 indent_size = 2
+
+# Fichiers Python
+[*.py]
+indent_style = space
+indent_size = 4
+
