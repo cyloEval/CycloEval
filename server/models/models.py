@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
 Base = declarative_base()
@@ -11,7 +10,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     name = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
-    createdAt = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+    createdAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
 
     detected_shocks = relationship("DetectedShock", back_populates="user")
     files = relationship("File", back_populates="user")

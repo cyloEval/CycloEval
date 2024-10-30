@@ -80,3 +80,7 @@ def create_detected_shock_endpoint(shock: DetectedShockCreate, db: Session = Dep
 def read_shocks_by_user(user_id: int, db: Session = Depends(get_db)):
     db_shocks = get_shocks_by_user(db, user_id)
     return db_shocks
+
+@router.post("/users/{user_id}/importSensorData", response_model=DetectedShockResponse)
+def import_json(user_id: int, db: Session = Depends(get_db)):
+    pass

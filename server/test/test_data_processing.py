@@ -6,7 +6,7 @@ from server.services.data_processing import parse_json_data, process_sensor_data
 class TestDataProcessing(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        with open('test/test_data.json') as file:
+        with open('server/test/test_data.json') as file:
             cls.data = json.load(file)
 
     def test_parse_json_data(self):
@@ -17,6 +17,7 @@ class TestDataProcessing(unittest.TestCase):
     def test_process_sensor_data(self):
         sensor_data_df = parse_json_data(self.data)
         merged_df = process_sensor_data(sensor_data_df)
+        self.assertIsNotNone(merged_df)
         self.assertIsInstance(merged_df, pd.DataFrame)
         self.assertFalse(merged_df.empty)
         self.assertIn('z', merged_df.columns)

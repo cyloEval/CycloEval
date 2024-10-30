@@ -4,6 +4,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 import pandas as pd
 from geopy.distance import geodesic
+from server.schemas.sensor_data import SensorData
 
 class ShockData(BaseModel):
     time: float
@@ -11,20 +12,6 @@ class ShockData(BaseModel):
     latitude: float
     longitude: float
     altitude: float
-
-class SensorData(BaseModel):
-    time: float
-    x: Optional[float]
-    y: Optional[float]
-    z: Optional[float]
-    qx: Optional[float]
-    qy: Optional[float]
-    qz: Optional[float]
-    qw: Optional[float]
-    latitude: Optional[float]
-    longitude: Optional[float]
-    altitude: Optional[float]
-    speed: Optional[float]
 
 def parse_json_data(data: List[dict]) -> pd.DataFrame:
     df = pd.DataFrame(data)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -17,8 +17,7 @@ class UserResponse(BaseModel):
     name: Optional[str] = None
     createdAt: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UserSignIn(BaseModel):
     email: str
