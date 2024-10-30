@@ -1,5 +1,5 @@
 from datetime import datetime
-from database import get_db, add_user, add_coordinate, add_detected_shock, add_route, add_location, add_file
+from server.core.database import get_db, add_user, add_coordinate, add_detected_shock, add_route, add_location, add_file
 
 # Fonction principale pour ajouter des données de test
 def add_test_data():
@@ -28,9 +28,16 @@ def add_test_data():
     shock2 = add_detected_shock(db, datetime.now(), 5.2, user.userId, coord2.id)
     print(f"Chocs détectés ajoutés : intensité {shock1.zAccel} à Lyon, {shock2.zAccel} à Paris")
 
-    # Ajouter un fichier de test
-    file = add_file(db, "test_file.json", '{"key": "value"}', user.userId)
-    print(f"Fichier ajouté : {file.name} avec contenu {file.content}")
+
+def clean_test_data():
+    db = next(get_db())
+    db.query(add_location).delete()
+    db.query(add_detected_shock).delete()
+    db.query(add_route).delete()
+    db.query(add_coordinate).delete()
+    db.query(add_user).delete()
+    db.commit()
+    print("Données de test supprimées")
 
 if __name__ == "__main__":
     add_test_data()

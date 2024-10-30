@@ -5,3 +5,8 @@ pydantic
 numpy
 scipy
 pytest
+geopy
+pandas
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic-settings
