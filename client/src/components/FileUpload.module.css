@@ -1,0 +1,102 @@
+.fileUploadContainer {
+    position: fixed; /* Changez position de relative à fixed pour le positionnement */
+    
+    top: 50%;        /* Positionne verticalement au milieu */
+    left: 50%;       /* Positionne horizontalement au milieu */
+    transform: translate(-50%, -50%); /* Centrage parfait */
+    max-width: 80%;  /* Augmentez max-width comme vous le souhaitez, ici 80% de la largeur de la vue */
+    width: 1000px; 
+    height : 200px;    /* Vous pouvez aussi fixer une largeur spécifique en px ou % si nécessaire */
+    margin: 0 auto;  /* Inutile avec position fixed, mais je le laisse si vous revenez à un positionnement non fixe */
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    z-index: 1000;   /* Assurez-vous qu'il est suffisamment haut pour être au-dessus d'autres éléments */
+}
+
+
+.backgroundImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background-size: cover;
+    filter: brightness(70%);
+}
+
+.fileUploadHeader {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.fileUploadMandatory {
+    color: #8a4a7d;
+    margin-bottom: 20px;
+}
+
+.fileInputWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.fileInput, .fileDrop {
+    padding: 10px 15px;
+    background: #ffffff;
+    border: 2px solid  #8a4a7d;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    text-align: center;
+}
+
+.fileDrop {
+    background: #8a4a7d;
+    color: #ffffff;
+}
+
+.fileInput:hover, .fileDrop:hover {
+    background: #ffe6f2;
+    transform: scale(1.05);
+}
+
+.buttonsContainer {
+    display: flex;
+    justify-content: space-between; /* Espacement équitable entre les éléments */
+    align-items: center; /* Centrer les éléments verticalement */
+    padding: 10px; /* Ajoute de l'espace autour des éléments */
+    margin-top: 20px; /* Espace supplémentaire du haut */
+}
+
+.button {
+    padding: 10px 20px; /* Espacement interne pour les boutons */
+    margin: 5px; /* Espacement externe entre les boutons */
+    background-color:  #8a4a7d; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Animation de fond lors du survol */
+}
+
+.button:hover {
+    background-color: #d6006e; /* Changement de couleur lors du survol */
+}
+
+
+.buttonPrimary {
+    background:  #8a4a7d;
+}
+
+
+
+.buttonPrimary:hover {
+    background: #d6006e;
+}
+

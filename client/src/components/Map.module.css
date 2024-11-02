@@ -1,0 +1,26 @@
+.mapContainer {
+    position: absolute;
+    top: 10px;
+    margin :10px;
+    right: 10px;
+    left: 10px;
+
+  }
+  
+  .toggleButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 400;
+  }
+  
+  .optionsPanel {
+    position: absolute;
+    top: 40px; /* Ajustez selon votre design */
+    left: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 400;
+  }
+  
