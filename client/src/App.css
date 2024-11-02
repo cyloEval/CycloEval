@@ -1,42 +1,41 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Flouter l'arrière-plan lorsqu'il est nécessaire */
+.blurBackground {
+  filter: blur(5px);
+  transition: filter 0.3s ease; /* Ajoute une transition douce pour le flou */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Cadre du formulaire d'import */
+.FileUpload {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* S'assure que le formulaire est au-dessus de la carte */
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px; /* Largeur augmentée pour un cadre plus large */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Overlay sombre lorsqu'un formulaire est ouvert */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* Juste en dessous du formulaire, mais au-dessus de tout le reste */
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Image de fond pour la première page */
+.bodyBackground {
+  background-image: url('../public/appVelo.jpg'); /* Remplacez par le lien correct de votre image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  position: relative; /* Assurez-vous que l'élément prend toute la fenêtre */
 }

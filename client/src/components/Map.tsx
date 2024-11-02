@@ -1,5 +1,6 @@
+import styles from './Header.module.css'
+import Legende from './legende';
 // MapComponent.tsx
-
 
 // Données d'exemple pour l'état des pistes cyclables
 const bikePaths = [
@@ -9,35 +10,30 @@ const bikePaths = [
 ];
 
 const MapComponent = () => {
-  // Latitude et longitude centrales pour le zoom
-  const centerLat = 51.505; 
-  const centerLon = -0.09;
-
-  // La zone de visualisation pour l'iframe
-  const bbox = `${centerLon - 0.1},${centerLat - 0.1},${centerLon + 0.1},${centerLat + 0.1}`;
-
-  // Générer les marqueurs en fonction des données
-  const markers = bikePaths
-    .map(path => `${path.lat},${path.lon}`)
-    .join('|');
-
+ 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <iframe
-        src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&markers=${markers}&markercolor=red`}
-        style={{ border: 0, width: '100%', height: '100%' }}
-        allowFullScreen
-      />
-      <p style={{ textAlign: 'center' }}>
-        État des pistes cyclables : 
-        {bikePaths.map(path => (
-          <span key={path.id} style={{ marginLeft: '10px' }}>
-            <span style={{ color: path.status === 'Bon' ? 'green' : path.status === 'Moyen' ? 'orange' : 'red' }}>
+    // <div style={{ height: '100vh', width: '100%' }}>
+    <div className={styles.maps}>    
+
+<iframe
+  src="https://www.openstreetmap.org/export/embed.html?bbox=-0.6892,44.7378,-0.4692,44.9378&layer=mapnik"
+  style={{ border: 0, width: '100%', height: '100%' }}
+  allowFullScreen
+/>
+
+      {/* <div>
+        <p style={{ textAlign: 'center' }}>
+          État des pistes cyclables : 
+          {bikePaths.map(path => (
+            <span key={path.id} style={{ marginLeft: '10px' }}>
+              {` Piste ${path.id}: ${path.status}`}
             </span>
-            {` Piste ${path.id}: ${path.status}`}
-          </span>
-        ))}
-      </p>
+          ))}
+        </p>
+      </div> */}
+          <div>
+            <Legende/>
+          </div>
     </div>
   );
 };
