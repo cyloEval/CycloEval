@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
@@ -59,6 +59,6 @@ class File(Base):
     name = Column(String, nullable=False)
     uploadAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
     userId = Column(Integer, ForeignKey("user.userId"), nullable=False)
-    content = Column(String, nullable=False)
+    content = Column(JSON, nullable=False)
 
     user = relationship("User", back_populates="files")

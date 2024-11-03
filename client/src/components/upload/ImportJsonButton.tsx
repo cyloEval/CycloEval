@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { postJsonDataUrl } from '../../lib/api';
 import { useAuth } from "../auth/AuthContext";
 
 const ImportJsonButton: React.FC = () => {
   const [jsonData, setJsonData] = useState<object | null>(null);
-  const requiredFields = ['sensor', 'time']; // Example of required fields
+  const requiredFields = ['sensor', 'time'];
   const {isSignedIn} = useAuth();
 
 
