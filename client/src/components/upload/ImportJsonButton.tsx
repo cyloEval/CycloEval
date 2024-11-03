@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { postJsonDataUrl } from '../lib/api';
-import { useAuth } from './AuthContext';
+import { postJsonDataUrl } from '../../lib/api';
+import { useAuth } from "../auth/AuthContext";
 
 const ImportJsonButton: React.FC = () => {
   const [jsonData, setJsonData] = useState<object | null>(null);

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Header from "./components/Header";
-import MapComponent from "./components/Map";
-import FileUpload from "./components/FileUpload";
+import MapComponent from "./components/map/Map";
+import FileUpload from "./components/upload/FileUpload";
 import Footer from "./components/Footer";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./components/auth/AuthContext";
 
 
 function App() {

@@ -8,9 +8,8 @@ class User(Base):
     __tablename__ = "user"
     userId = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, nullable=False)
-    name = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
-    createdAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
+    createdAt = Column(DateTime, default=datetime.now)
 
     detected_shocks = relationship("DetectedShock", back_populates="user")
     files = relationship("File", back_populates="user")
@@ -48,7 +47,6 @@ class DetectedShock(Base):
 class Route(Base):
     __tablename__ = "route"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, nullable=False)
     createdAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
     userId = Column(Integer, ForeignKey("user.userId"), nullable=False)
 

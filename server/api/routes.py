@@ -1,29 +1,52 @@
+import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import timedelta
+from jose import JWTError, jwt
 from server.models.models import User
 from server.core.database import get_db
 from server.schemas.user import UserCreate, UserResponse, UserSignIn, Token, TokenData
 from server.schemas.detected_shock import DetectedShockCreate, DetectedShockResponse
-from server.crud.user import create_user, get_user
+from server.crud.user import create_user, authenticate_user, get_user_by_email, get_user
 from server.crud.detected_shock import create_detected_shock, get_shocks_by_user
-from server.core.security import verify_password, oauth2_scheme
-from jose import JWTError, jwt
-from datetime import datetime, timedelta
+from server.core.security import verify_password, create_access_token, oauth2_scheme
 from server.core.config import settings
 
+# Configurer le logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now() + expires_delta
-    else:
-        expire = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return encoded_jwt
+@router.post("/auth/register", response_model=UserResponse)
+def register(user: UserCreate, db: Session = Depends(get_db)):
+    logger.info("Received registration request for email: %s", user.email)
+    try:
+        db_user = get_user_by_email(db, user.email)
+        if db_user:
+            logger.warning("Email already registered: %s", user.email)
+            raise HTTPException(status_code=400, detail="Email already registered")
+        new_user: UserResponse = create_user(db, user)
+        logger.info("User created successfully: %s", new_user.email)
+        return new_user
+    except Exception as e:
+        logger.error("Error during registration: %s", str(e))
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@router.post("/auth/login", response_model=Token)
+def login(user: UserSignIn, db: Session = Depends(get_db)):
+    logger.info(f"Login attempt for email: {user.email}")
+    authenticated_user = authenticate_user(db, user.email, user.password)
+    if not authenticated_user:
+        logger.warning(f"Failed login attempt for email: {user.email}")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": authenticated_user.email}, expires_delta=access_token_expires
+    )
+    logger.info(f"User logged in successfully: {user.email}")
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(form_data: UserSignIn, db: Session = Depends(get_db)):
@@ -59,10 +82,6 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         raise credentials_exception
     return user
 
-@router.post("/users/", response_model=UserResponse)
-def create_user_endpoint(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = create_user(db, user)
-    return db_user
 
 @router.get("/users/{user_id}", response_model=UserResponse)
 def read_user(user_id: int, db: Session = Depends(get_db)):

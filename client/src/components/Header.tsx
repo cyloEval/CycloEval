@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logoEtuderecup from "/logoEtudeRecup.jpg";
-import SignInButton from "./SignInButton";
-import { useAuth } from "./AuthContext";
+import SignInButton from "./auth/SignInButton";
+import { useAuth } from "./auth/AuthContext";
 
 type HeaderProps = {
   onUploadClick: () => void;
