@@ -15,6 +15,8 @@ class DetectedShockResponse(BaseModel):
     timestamp: datetime
     zAccel: float
     userId: int
-    coordinateId: int
+    latitude: float
+    longitude: float
+    altitude: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)

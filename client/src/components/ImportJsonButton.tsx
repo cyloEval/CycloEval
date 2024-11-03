@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { postJsonDataUrl } from '../lib/api';
+import { useAuth } from './AuthContext';
 
 const ImportJsonButton: React.FC = () => {
   const [jsonData, setJsonData] = useState<object | null>(null);
-
   const requiredFields = ['sensor', 'time']; // Example of required fields
+  const {isSignedIn} = useAuth();
+
 
   const validateJsonStructure = (json: any): boolean => {
     if (!Array.isArray(json)) {
@@ -14,6 +16,11 @@ const ImportJsonButton: React.FC = () => {
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isSignedIn) {
+      alert('Please sign in before uploading a file.');
+      return;
+    }
+
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -60,11 +67,21 @@ const ImportJsonButton: React.FC = () => {
   };
 
   return (
-    <div className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
-      <input type="file" accept=".json" onChange={handleFileUpload} />
-      {jsonData && (
-        <pre>{JSON.stringify(jsonData, null, 2)}</pre>
-      )}
+    <div>
+      {isSignedIn ? (
+        <div className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+          <input type="file" accept=".json" onChange={handleFileUpload} />
+          {jsonData && (
+            <pre>{JSON.stringify(jsonData, null, 2)}</pre>
+          )}
+        </div>
+      ) :
+      (
+        <div className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+          Please sign in to upload a file
+        </div>
+      )
+      }
     </div>
   );
 };
