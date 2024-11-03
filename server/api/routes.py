@@ -84,3 +84,13 @@ def read_shocks_by_user(user_id: int, db: Session = Depends(get_db)):
 @router.post("/users/{user_id}/importSensorData", response_model=DetectedShockResponse)
 def import_json(user_id: int, db: Session = Depends(get_db)):
     pass
+
+# TODO Add a route to import sensor data
+
+# TODO Add a route to get all detected shocks for a user
+
+# TODO Add a route to get all detected shocks for a user within a certain time range
+
+# TODO Add a route to get all detected shocks for a user within a certain location range
+
+# TODO Add a route to get all shocks within a certain time range
