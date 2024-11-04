@@ -7,6 +7,6 @@ scipy
 pytest
 geopy
 pandas
-passlib[bcrypt]
+passlib
 python-jose[cryptography]
 pydantic-settings

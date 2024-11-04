@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 import pandas as pd
 from geopy.distance import geodesic
-from server.schemas.sensor_data import SensorData
+
 
 class ShockData(BaseModel):
     time: float
