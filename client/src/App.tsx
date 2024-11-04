@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Header from "./components/Header";
+import Header from "./components/header/Header";
 import MapComponent from "./components/map/Map";
 import FileUpload from "./components/upload/FileUpload";
 import Footer from "./components/Footer";

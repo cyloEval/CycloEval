@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import { api } from "../../lib/api";
 
-const SignInButton: React.FC = () => {
+const SignInForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -82,7 +82,7 @@ const SignInButton: React.FC = () => {
   };
 
   return (
-    <form className="bg-purple-600 text-lg border border-purple-700 p-6 rounded-lg shadow-lg">
+    <form className="bg-purple-600 text-lg border border-purple-700 p-6 rounded-lg shadow-lg text-black">
       <div className="mb-4">
         <input
           type="email"
@@ -133,4 +133,4 @@ const SignInButton: React.FC = () => {
   );
 };
 
-export default SignInButton;
+export default SignInForm;
