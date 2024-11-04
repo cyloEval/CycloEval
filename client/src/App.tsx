@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
 import Header from './components/Header';
+
 import MapComponent from './components/Map';
 import FileUpload from './components/FileUpload';
 import Footer from './components/Footer';
 import './App.css';
+import Contribution from './components/contribution';
 
 function App() {
     const [showUpload, setShowUpload] = useState(false);
@@ -48,8 +51,18 @@ function App() {
                 </>
             )}
             <Footer />
+            <Contribution/>
         </div>
     );
 }
 
-export default App;
+export default function AppWithRouter() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<App />} />
+                <Route path="/contribution" element={<Contribution />} />
+            </Routes>
+        </Router>
+    );
+}
