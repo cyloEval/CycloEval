@@ -1,8 +1,15 @@
-from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey, JSON
+from sqlalchemy import Table, Column, Integer, Float, String, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
 Base = declarative_base()
+
+# Table d'association pour la relation many-to-many
+route_coordinate = Table(
+    'route_coordinate', Base.metadata,
+    Column('route_id', Integer, ForeignKey('route.id'), primary_key=True),
+    Column('coordinate_id', Integer, ForeignKey('coordinate.id'), primary_key=True)
+)
 
 class User(Base):
     __tablename__ = "user"
@@ -22,16 +29,7 @@ class Coordinate(Base):
     longitude = Column(Float, nullable=False)
     altitude = Column(Float, nullable=True)
 
-    location = relationship("Location", back_populates="coordinate")
-
-class Location(Base):
-    __tablename__ = "location"
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    routeId = Column(Integer, ForeignKey("route.id"), unique=True, nullable=False)
-    coordinateId = Column(Integer, ForeignKey("coordinate.id"), unique=True, nullable=False)
-
-    route = relationship("Route", back_populates="bounds")
-    coordinate = relationship("Coordinate", back_populates="location")
+    routes = relationship("Route", secondary=route_coordinate, back_populates="coordinates")
 
 class DetectedShock(Base):
     __tablename__ = "detected_shock"
@@ -47,17 +45,17 @@ class DetectedShock(Base):
 class Route(Base):
     __tablename__ = "route"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    createdAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
+    createdAt = Column(DateTime, default=datetime.now() )
     userId = Column(Integer, ForeignKey("user.userId"), nullable=False)
 
     user = relationship("User", back_populates="routes")
-    bounds = relationship("Location", back_populates="route")
+    coordinates = relationship("Coordinate", secondary=route_coordinate, back_populates="routes")
 
 class File(Base):
     __tablename__ = "file"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
-    uploadAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
+    uploadAt = Column(DateTime, default=datetime.now())
     userId = Column(Integer, ForeignKey("user.userId"), nullable=False)
     content = Column(String, nullable=False)
 

@@ -1,7 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class RouteCreate(BaseModel):
     name: str
     userId: int
-    coordinates: list[float]
+    coordinatesIds: list[int]
+
+class RouteResponse(BaseModel):
+    id: int
+    name: str
+    userId: int
+    coordinatesIds: list[int]
+    model_config = ConfigDict(from_attributes=True)
 

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from server.models.models import DetectedShock, Coordinate
-from server.schemas.detected_shock import DetectedShockCreate
+from server.models import DetectedShock, Coordinate
+from server.schemas import DetectedShockCreate
 
 def create_detected_shock(db: Session, shock: DetectedShockCreate):
     db_coordinate = Coordinate(latitude=shock.latitude, longitude=shock.longitude, altitude=shock.altitude)
