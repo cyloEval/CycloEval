@@ -18,6 +18,7 @@ class UserSignIn(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    email: str
 
 class TokenData(BaseModel):
     email: str

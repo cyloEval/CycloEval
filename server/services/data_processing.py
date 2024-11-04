@@ -4,11 +4,10 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 import pandas as pd
 from geopy.distance import geodesic
-from server.schemas.sensor_data import SensorData
-import datetime
+
 
 class ShockData(BaseModel):
-    time: datetime
+    time: float
     zAccel: float
     latitude: float
     longitude: float

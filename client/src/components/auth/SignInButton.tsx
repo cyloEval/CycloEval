@@ -9,7 +9,7 @@ const SignInButton: React.FC = () => {
   const [error, setError] = useState("");
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
 
-  const { toggleSignIn } = useAuth();
+  const { setUserEmail, toggleSignIn } = useAuth();
 
   const handleCreateAccount = async () => {
     setIsCreatingAccount(true);
@@ -70,6 +70,7 @@ const SignInButton: React.FC = () => {
         // Handle successful login, e.g., save token, redirect, etc.
         console.log("Login successful:", data);
         toggleSignIn();
+        setUserEmail(email);
       } else {
         console.error("Login failed");
         setError("Login failed");

@@ -8,7 +8,7 @@ type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
-  const { isSignedIn, toggleSignIn } = useAuth();
+  const { isSignedIn, userEmail, toggleSignIn } = useAuth();
   const [showSignIn, setShowSignIn] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
 
@@ -26,11 +26,18 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
       <div className="flex w-1/5 border border-white rounded-sm h-15 hover:scale-115 transition-transform">
         <img src={logoEtuderecup} className="logo" alt="logo_etude_recup" />
       </div>
+
+      {isSignedIn && userEmail ? (
+        <div>
+          <p className="text-white text-lg">Bienvenue {userEmail}</p>
+        </div>
+      ) : null}
+
       <div className="flex items-center space-x-4">
         <button
           className="px-4 py-1 bg-purple-900 text-white border border-dotted border-white rounded-full cursor-pointer hover:scale-115 hover:bg-purple-500 transition-transform"
           onClick={() =>
-            isSignedIn ?  handleUploadClick() : alert("Sign in before")
+            isSignedIn ? handleUploadClick() : alert("Sign in before")
           }
         >
           Importer un fichier

@@ -59,6 +59,6 @@ class File(Base):
     name = Column(String, nullable=False)
     uploadAt = Column(DateTime, default=datetime.now, onupdate=datetime.now())
     userId = Column(Integer, ForeignKey("user.userId"), nullable=False)
-    content = Column(JSON, nullable=False)
+    content = Column(String, nullable=False)
 
     user = relationship("User", back_populates="files")
