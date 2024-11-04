@@ -8,6 +8,7 @@ class UserCreate(BaseModel):
     password: str
 
 class UserResponse(BaseModel):
+    id: int
     email: str
     model_config = ConfigDict(from_attributes=True)
 
