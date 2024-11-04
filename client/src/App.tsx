@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
 import Header from './components/Header';
 
 import MapComponent from './components/Map';
@@ -11,6 +11,7 @@ import Contribution from './components/contribution';
 function App() {
     const [showUpload, setShowUpload] = useState(false);
     const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
+    const navigate = useNavigate();
 
     const toggleUpload = () => {
         setShowUpload(!showUpload);
@@ -50,8 +51,25 @@ function App() {
                     <FileUpload />
                 </>
             )}
+
             <Footer />
-            <Contribution/>
+
+            <button style={{  padding: "10px 15px",
+                        margin:"80px",
+                        background: "#ffffff",
+                        border: "2px solid  #8a4a7d",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        transition: "background 0.3s, transform 0.2s",
+                        textAlign: "center"}} onClick={() => {
+                            navigate('/contribution');
+                          }}>
+                 comment contribuer
+                </button>
+
+            
+
+            
         </div>
     );
 }
@@ -62,6 +80,7 @@ export default function AppWithRouter() {
             <Routes>
                 <Route path="/" element={<App />} />
                 <Route path="/contribution" element={<Contribution />} />
+                <Route path="/import" element={<FileUpload />} />
             </Routes>
         </Router>
     );
