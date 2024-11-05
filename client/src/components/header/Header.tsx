@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
 
   return (
     <header className="flex justify-between items-center p-4 bg-purple-700 text-white h-20">
-      <div className="flex w-1/5 border border-white rounded-sm h-15 hover:scale-115 transition-transform">
+      <div className="flex w-1/6 border border-white rounded-sm h-17 hover:scale-115 transition-transform">
         <img src={logoEtuderecup} className="logo" alt="logo_etude_recup" />
       </div>
       {isSignedIn && userEmail ? (

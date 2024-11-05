@@ -1,20 +1,31 @@
-import { useState } from "react";
-import Header from "./components/header/Header";
-import MapComponent from "./components/map/Map";
-import FileUpload from "./components/upload/FileUpload";
-import Footer from "./components/Footer";
+
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
+import Header from './components/header/Header';
+
+import MapComponent from './components/map/Map';
+import FileUpload from './components/upload/FileUpload';
+import Footer from './components/Footer';
+import Contribution from './components/contribution';
 import { AuthProvider } from "./components/auth/AuthContext";
 
 function App() {
-  const [showUpload, setShowUpload] = useState(false);
+    const [showUpload, setShowUpload] = useState(false);
+    const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
+    const navigate = useNavigate();
 
-  const toggleUpload = () => {
-    setShowUpload(!showUpload);
-  };
+
+
 
   const handleCancelUpload = () => {
     setShowUpload(false);
   };
+
+  const toggleUpload = () => {
+    setShowUpload(!showUpload);
+    };
+
+
 
   const handleFileUpload = async (file: File) => {
     const formData = new FormData();
@@ -57,9 +68,27 @@ function App() {
           </>
         )}
         <Footer />
+        <div className=" p-3.5 m-20 bg-white border-2 border-[#8a4a7d] rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:bg-gray-100 text-center" style={{width:"20%"}}
+        onClick={()=>navigate('/contribution')}
+        >
+        Comment contribuer
+        </div>
       </div>
+
     </AuthProvider>
+    
+    
   );
 }
 
-export default App;
+export default function AppWithRouter() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<App />} />
+                <Route path="/contribution" element={<Contribution />} />
+                <Route path="/import" element={<FileUpload />} />
+            </Routes>
+        </Router>
+    );
+}

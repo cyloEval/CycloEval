@@ -23,6 +23,12 @@
     npm run dev
     ```
 
+```shell
+cd client && pnpm install
+
+pnpm run dev
+``` 
+
 ## Backend Setup
 
 1. Install Python dependencies:
