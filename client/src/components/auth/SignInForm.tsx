@@ -67,6 +67,13 @@ const SignInForm: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("refreshToken", data.refresh_token);
+        localStorage.setItem("expiresIn", data.expires_in);
+        localStorage.setItem("tokenType", data.token_type);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userId", data.user_id);
+        
         // Handle successful login, e.g., save token, redirect, etc.
         console.log("Login successful:", data);
         toggleSignIn();
