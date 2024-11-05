@@ -6,7 +6,6 @@ numpy
 scipy
 pytest
 geopy
-pandas
 passlib
 python-jose[cryptography]
 pydantic-settings
