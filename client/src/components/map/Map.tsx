@@ -1,38 +1,141 @@
-import Legende from "./legende";
-// MapComponent.tsx
+import React, { useEffect } from "react";
+import { MapContainer, TileLayer, Popup, Marker, Circle } from "react-leaflet";
 
-// Données d'exemple pour l'état des pistes cyclables
-const bikePaths = [
-  { id: 1, lat: 51.505, lon: -0.09, status: "Bon" }, // Bon état
-  { id: 2, lat: 51.51, lon: -0.1, status: "Moyen" }, // État moyen
-  { id: 3, lat: 51.49, lon: -0.08, status: "Mauvais" }, // Mauvais état
-];
+type Shock = {
+  id: number;
+  timestamp: string;
+  zAccel: number;
+  userId: number;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+};
 
-const MapComponent = () => {
+
+
+const MapComponent: React.FC= () => {
+  const mapRef = React.useRef(null);
+
   return (
-    // <div style={{ height: '100vh', width: '100%' }}>
-    <div className="mt-[10vh] ml-[45%] h-[50vh] w-1/2">
-      <iframe
-        src="https://www.openstreetmap.org/export/embed.html?bbox=-0.6892,44.7378,-0.4692,44.9378&layer=mapnik"
-        style={{ border: 0, width: "100%", height: "100%" }}
-        allowFullScreen
-      />
+    <div
+      className="flex justify-center text-center align-middle pt-24"
+    >
+      <MapContainer
+        ref={mapRef}
+        className="map"
+        center={[44.8, -0.6]}
+        zoom={12}
+        scrollWheelZoom={false}
+        style={{zIndex: 30}}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-      {/* <div>
-        <p style={{ textAlign: 'center' }}>
-          État des pistes cyclables :
-          {bikePaths.map(path => (
-            <span key={path.id} style={{ marginLeft: '10px' }}>
-              {` Piste ${path.id}: ${path.status}`}
-            </span>
-          ))}
-        </p>
-      </div> */}
-      <div>
-        <Legende />
-      </div>
+        {shockSample.map((shock: Shock) => (
+          <Circle
+            center={[shock.latitude, shock.longitude]}
+            radius={1}
+            color={Math.abs(shock.zAccel) > 4 ? "red" : "blue"}
+          />
+        ))}
+      </MapContainer>
     </div>
   );
 };
 
 export default MapComponent;
+
+const shockSample = [
+  {
+    id: 1,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -1.139336068711178,
+    userId: 1,
+    latitude: 44.8004417,
+    longitude: -0.6057561,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 2,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -2.139336068711178,
+    userId: 1,
+    latitude: 44.8004598,
+    longitude: -0.6056892,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 3,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8004776,
+    longitude: -0.6056233,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 4,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8004955,
+    longitude: -0.6055564,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 5,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8005123,
+    longitude: -0.6054893,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 6,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8005287,
+    longitude: -0.6054211,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 7,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -2.139336068711178,
+    userId: 1,
+    latitude: 44.8005436,
+    longitude: -0.6053569,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 8,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8005588,
+    longitude: -0.605295,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 9,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8005748,
+    longitude: -0.6052315,
+    altitude: 72.30000305175781,
+  },
+  {
+    id: 10,
+    timestamp: "2024-10-14T13:40:02",
+    zAccel: -4.139336068711178,
+    userId: 1,
+    latitude: 44.8005992,
+    longitude: -0.6051776,
+    altitude: 72.30000305175781,
+  },
+];

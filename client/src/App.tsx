@@ -31,30 +31,29 @@ function App() {
 
   return (
     <AuthProvider>
-        <div
-          className="relative h-screen w-screen bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/appVelo.jpg')" }}
-        >
-          <Header onUploadClick={toggleUpload} />
-          <MapComponent />
-          {showUpload && (
-            <>
-              <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
-              <FileUploadMenu
-                onCancel={handleCancelUpload}
-                onContinue={handleContinueUpload}
-              />
-            </>
-          )}
-          <Footer />
-          <div
-            className=" p-3.5 m-20 bg-white border-2 border-[#8a4a7d] rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:bg-gray-100 text-center"
-            style={{ width: "20%" }}
-            onClick={() => navigate("/contribution")}
-          >
-            Comment contribuer
+      <div
+        className="relative h-screen w-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/appVelo.jpg')" }}
+      >
+        <Header onUploadClick={toggleUpload} />
+        {showUpload && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
+            <FileUploadMenu
+              onCancel={handleCancelUpload}
+              onContinue={handleContinueUpload}
+            />
           </div>
+        )}
+        <MapComponent />
+        <Footer />
+        <div
+          className=" p-3.5 m-20 bg-white border-2 border-[#8a4a7d] rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:bg-gray-100 text-center"
+          style={{ width: "20%" }}
+          onClick={() => navigate("/contribution")}
+        >
+          Comment contribuer
         </div>
+      </div>
     </AuthProvider>
   );
 }

@@ -39,10 +39,10 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
         </div>
       ) : null}
       <div className="flex items-center space-x-4">
-        {/* <ImportFileButton
+        <ImportFileButton
           isSignedIn={isSignedIn}
           handleUploadClick={handleUploadClick}
-        /> */}
+        />
         {isSignedIn ? (
           <SignOutButton onClick={signOut} />
         ) : (
