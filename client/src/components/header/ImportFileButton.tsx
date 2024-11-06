@@ -1,12 +1,12 @@
 import React from "react";
 import Button from "./Button";
 
-type UploadButtonProps = {
+type importFileButtonProps = {
   isSignedIn: boolean;
   handleUploadClick: () => void;
 };
 
-const UploadButton: React.FC<UploadButtonProps> = ({
+const ImportFileButton: React.FC<importFileButtonProps> = ({
   isSignedIn,
   handleUploadClick,
 }) => (
@@ -17,4 +17,4 @@ const UploadButton: React.FC<UploadButtonProps> = ({
   </Button>
 );
 
-export default UploadButton;
+export default ImportFileButton;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import ContactButton from "./ContactButton";
 import SignInButton from "./SignInButton";
 import SignOutButton from "./SignOutButton";
-import UploadButton from "./UploadButton";
+import ImportFileButton from "./ImportFileButton";
 import { useAuth } from "../auth/AuthContext";
 import SignInForm from "../auth/SignInForm";
 import logoEtuderecup from "/logoEtudeRecup.jpg";
@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
         </div>
       ) : null}
       <div className="flex items-center space-x-4">
-        <UploadButton
+        <ImportFileButton
           isSignedIn={isSignedIn}
           handleUploadClick={handleUploadClick}
         />
