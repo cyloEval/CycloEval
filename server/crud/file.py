@@ -3,7 +3,7 @@ from server.models import File
 from server.schemas import FileCreate, FileResponse, FileResponseShort
 
 def create_file(db: Session, FileCreate: FileCreate) -> FileResponseShort:
-    db_file = File(name=FileCreate.filename, user_id=FileCreate.user_id, content=FileCreate.content)
+    db_file = File(name=FileCreate.filename, user_id=FileCreate.user_id)
     db.add(db_file)
     db.commit()
     db.refresh(db_file)
@@ -20,7 +20,7 @@ def get_file(db: Session, file_id: int) -> FileResponse:
         filename=db_file.name,
         user_id=db_file.user_id,
         upload_time=db_file.uploadAt,
-        content=db_file.content
+        # content=db_file.content
     )
 
 def get_files_by_user(db: Session, user_id: int) -> list[FileResponse]:
@@ -30,6 +30,6 @@ def get_files_by_user(db: Session, user_id: int) -> list[FileResponse]:
         filename=file.name,
         user_id=file.user_id,
         upload_time=file.uploadAt,
-        content=file.content
+        # content=file.content
     ) for file in files]
 

@@ -58,6 +58,6 @@ class File(Base):
     name = Column(String, nullable=False)
     uploadAt = Column(DateTime, default=datetime.now)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    content = Column(String, nullable=False)
+    # content = Column(String, nullable=False)
 
     user = relationship("User", back_populates="files")

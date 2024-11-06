@@ -21,6 +21,10 @@ function App() {
     setShowUpload(false);
   };
 
+  const handleContinueUpload = () => {
+    setShowUpload(false);
+  }
+
   const toggleUpload = () => {
     setShowUpload(!showUpload);
     };
@@ -37,7 +41,7 @@ function App() {
         {showUpload && (
           <>
             <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
-            <FileUploadMenu onCancel={handleCancelUpload} />
+            <FileUploadMenu onCancel={handleCancelUpload} onContinue={handleContinueUpload} />
           </>
         )}
         <Footer />

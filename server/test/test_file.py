@@ -3,7 +3,7 @@ from server.crud.file import create_file, get_file, get_files_by_user
 from server.schemas import FileCreate
 
 def test_create_file(db):
-    file_create = FileCreate(filename="test.txt", user_id=1, content="Test content")
+    file_create = FileCreate(filename="test.txt", user_id=1)
     file_response = create_file(db, file_create)
     assert file_response.id is not None
     assert file_response.filename == "test.txt"

@@ -89,7 +89,7 @@ async def import_sensor_data(data:SendedData , db: Session = Depends(get_db), cu
         detecteds_shocks:ShockData = extract_shocks_sensor_data(json_data)
 
         # Store the raw data in the File table
-        created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=current_user.id, content=raw_json))
+        created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=current_user.id))
 
         coordinates = data.locations
         coordinate_ids = []

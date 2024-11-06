@@ -26,7 +26,7 @@ const getTokenFromLocal = () => {
 }
 
 
-const sendSensorDataToApi = async (data: SensorData) => {
+export const sendSensorDataToApi = async (data: SensorData) => {
   const token = getTokenFromLocal();
   const response = await fetch(`${api}/importSensorData`, {
     method: "POST",
@@ -43,4 +43,3 @@ const sendSensorDataToApi = async (data: SensorData) => {
   return response.json();
 };
 
-export default sendSensorDataToApi;
