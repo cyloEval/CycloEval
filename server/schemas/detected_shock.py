@@ -20,3 +20,11 @@ class DetectedShockResponse(BaseModel):
     altitude: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ShockData(BaseModel):
+    time: int
+    zAccel: float
+    latitude: float
+    longitude: float
+    altitude: float

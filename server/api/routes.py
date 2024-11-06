@@ -11,13 +11,13 @@ from server.core.database import get_db
 from server.crud import (
     create_coordinate, get_nearby_coordinate,
     create_user, authenticate_user, get_user_by_email, get_user,
-    create_detected_shock, get_shocks_by_user,
+    create_detected_shock, get_shocks_by_user_with_coord, shockData_to_DetectedShockCreate, get_all_shocks,
     create_file,
     create_route
 )
 from server.core.security import verify_password, create_access_token, oauth2_scheme
 from server.core.config import settings
-from server.services import parse_json_data, process_sensor_data, detect_shocks
+from server.services import get_sensor_data, extract_shocks_sensor_data
 
 
 # Configurer le logger
@@ -78,12 +78,13 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
 async def import_sensor_data(filename, raw_json:str , db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
     try:
 
+        # Extract the sensor data from the raw json and calculate the detected shocks
         data:SensorData = get_sensor_data(raw_json)
+        detecteds_shocks:ShockData = extract_shocks_sensor_data(data)
 
         # Store the raw data in the File table
         created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=current_user.id, content=raw_json))
 
-        # Store the Route
 
         coordinates = data.locations
         coordinatesIds = []
@@ -92,43 +93,16 @@ async def import_sensor_data(filename, raw_json:str , db: Session = Depends(get_
             created_coord = create_coordinate(db, coord.latitude, coord.longitude, coord.altitude)
             coordinatesIds.append(created_coord.id)
 
-        db_route = create_route(db, current_user.id, filename, coordinatesIds)
+        # Store the Route
+        created_route:RouteResponse = create_route(db, current_user.id, filename, coordinatesIds)
 
+        # Store the DetectedShock
+        detecteds_shocks_response = []
+        for shock in detecteds_shocks:
+            db_shock:DetectedShockResponse = create_detected_shock(db,shockData_to_DetectedShockCreate(shock , current_user.id))
+            detecteds_shocks_response.append(db_shock)
+        return detecteds_shocks_response
 
-        # TODO
-    #     # Parse and process the data
-    #     df = parse_json_data(data)
-    #     merged_df = process_sensor_data(df)
-
-    #     # Detect shocks
-    #     shocks = detect_shocks(merged_df)
-
-    #     # Store detected shocks in the DetectedShock table
-    #     db_shocks = []
-    #     for shock in shocks:
-    #         # Create or get the coordinate within 1 meter radius
-    #         db_coordinate = get_nearby_coordinate(db, shock.latitude, shock.longitude, shock.altitude)
-    #         if not db_coordinate:
-    #             db_coordinate = Coordinate(
-    #                 latitude=shock.latitude,
-    #                 longitude=shock.longitude,
-    #                 altitude=shock.altitude
-    #             )
-    #             db.add(db_coordinate)
-    #             db.commit()
-    #             db.refresh(db_coordinate)
-
-    #         db_shock = DetectedShockModel(
-    #             timestamp=datetime.fromtimestamp(shock.time),
-    #             zAccel=shock.zAccel,
-    #             userId=current_user.id,
-    #             coordinateId=db_coordinate.id
-    #         )
-    #         db.add(db_shock)
-    #         db_shocks.append(db_shock)
-
-    #     db.commit()
-    #     return db_shocks
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")
     except Exception as e:

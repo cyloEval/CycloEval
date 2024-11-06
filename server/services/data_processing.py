@@ -1,43 +1,67 @@
-from typing import List, Optional
-from pydantic import BaseModel
 import numpy as np
-from scipy.spatial.transform import Rotation as R
-import pandas as pd
+from scipy.spatial.transform import Rotation
 from geopy.distance import geodesic
+from server.schemas import ShockData, get_sensor_data, SensorData
 
+def process_sensor_data(sensorData: SensorData) -> list[dict]:
+    orientations = [orientation.model_dump() for orientation in sensorData.orientations if orientation.time]
+    locations = [location.model_dump() for location in sensorData.locations if location.time]
+    accelerometers = [accelerometer.model_dump() for accelerometer in sensorData.accelerometers if accelerometer.time]
 
-class ShockData(BaseModel):
-    time: float
-    zAccel: float
-    latitude: float
-    longitude: float
-    altitude: float
+    field_to_drop = ['sensor', 'bearing' ,'seconds_elapsed', 'bearingAccuracy', 'speedAccuracy', 'verticalAccuracy', 'horizontalAccuracy', 'roll', 'pitch', 'yaw']
+    field_to_float = ['altitude', 'longitude', 'latitude', 'speed', 'z', 'y', 'x', 'qz', 'qy', 'qx', 'qw']
 
-def parse_json_data(data: List[dict]) -> pd.DataFrame:
-    df = pd.DataFrame(data)
-    return df
+    def clean_data(data):
+        data['time'] = int(data['time'])
+        for field in field_to_drop:
+            if field in data:
+                del data[field]
+        for field in field_to_float:
+            if field in data:
+                data[field] = float(data[field])
+        return data
 
-def process_sensor_data(df: pd.DataFrame) -> pd.DataFrame:
-    accel_df = df[['time', 'z']].dropna(subset=['z']).astype({'time': 'float64', 'z': 'float64'})
-    orient_df = df[['time', 'qx', 'qy', 'qz', 'qw']].dropna(subset=['qw']).astype({'time': 'float64', 'qx': 'float64', 'qy': 'float64', 'qz': 'float64', 'qw': 'float64'})
-    location_df = df[['time', 'latitude', 'longitude', 'altitude', 'speed']].dropna(subset=['latitude']).astype({'time': 'float64', 'latitude': 'float64', 'longitude': 'float64', 'altitude': 'float64', 'speed': 'float64'})
+    orientations = [clean_data(orientation) for orientation in orientations]
+    locations = [clean_data(location) for location in locations]
+    accelerometers = [clean_data(accelerometer) for accelerometer in accelerometers]
 
-    merged_df = pd.merge_asof(accel_df.sort_values('time'), orient_df.sort_values('time'), on='time', direction='nearest')
-    merged_df = pd.merge_asof(merged_df.sort_values('time'), location_df.sort_values('time'), on='time', direction='nearest')
+    merged_data = []
+    for location in locations:
+        time = location['time']
+        accelerometer = min(accelerometers, key=lambda x: abs(x['time'] - time))
+        orientation = min(orientations, key=lambda x: abs(x['time'] - time))
+        merged_data.append({**location, **accelerometer, **orientation})
 
-    return merged_df
+    print(merged_data)
+    return merged_data
 
 def quaternion_to_rotation_matrix(qw, qx, qy, qz):
-    return R.from_quat([qx, qy, qz, qw])
+    return Rotation.from_quat([qx, qy, qz, qw])
 
-def rotate_acceleration(accel_x, accel_y, accel_z, rotation):
+def rotate_acceleration(accel_x, accel_y, accel_z, rotation: Rotation) -> np.ndarray:
     accel_local = np.array([accel_x, accel_y, accel_z])
     accel_global = rotation.apply(accel_local)
     return accel_global
 
-def detect_shocks(merged_df: pd.DataFrame, shock_threshold: float = 3.0) -> List[ShockData]:
+def filter_shocks(shocks: list[ShockData]) -> list[ShockData]:
+    filtered_shocks = []
+    for shock in shocks:
+        lat, lon = shock.latitude, shock.longitude
+        too_close = False
+        for i, filtered_shock in enumerate(filtered_shocks):
+            lat2, lon2 = filtered_shock.latitude, filtered_shock.longitude
+            if geodesic((lat, lon), (lat2, lon2)).meters < 1:
+                too_close = True
+                if shock.zAccel > filtered_shock.zAccel:
+                    filtered_shocks[i] = shock
+                break
+        if not too_close:
+            filtered_shocks.append(shock)
+    return filtered_shocks
+
+def detect_shocks(merged_data: list[dict], shock_threshold: float = 3.0) -> list[ShockData]:
     shocks = []
-    for _, row in merged_df.iterrows():
+    for row in merged_data:
         accel_z = row['z']
         qw, qx, qy, qz = row['qw'], row['qx'], row['qy'], row['qz']
 
@@ -53,19 +77,9 @@ def detect_shocks(merged_df: pd.DataFrame, shock_threshold: float = 3.0) -> List
                 altitude=row['altitude']
             ))
 
-    # Filter shocks to avoid overlapping data points
-    filtered_shocks = []
-    for shock in shocks:
-        lat, lon = shock.latitude, shock.longitude
-        too_close = False
-        for i, filtered_shock in enumerate(filtered_shocks):
-            lat2, lon2 = filtered_shock.latitude, filtered_shock.longitude
-            if geodesic((lat, lon), (lat2, lon2)).meters < 1:
-                too_close = True
-                if shock.zAccel > filtered_shock.zAccel:
-                    filtered_shocks[i] = shock
-                break
-        if not too_close:
-            filtered_shocks.append(shock)
+    return filter_shocks(shocks)
 
-    return filtered_shocks
+def extract_shocks_sensor_data(sensor_json: list[dict]) -> list[ShockData]:
+    sensor_data = get_sensor_data(sensor_json)
+    merged_data = process_sensor_data(sensor_data)
+    return detect_shocks(merged_data)

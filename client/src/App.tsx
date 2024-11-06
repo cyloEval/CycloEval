@@ -35,6 +35,10 @@ function App() {
     try {
       const response = await fetch("/importSensorData", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        
         body: formData,
       });
 
@@ -76,8 +80,8 @@ function App() {
       </div>
 
     </AuthProvider>
-    
-    
+
+
   );
 }
 
