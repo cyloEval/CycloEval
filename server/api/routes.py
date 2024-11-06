@@ -5,6 +5,7 @@ from typing import List
 from datetime import timedelta, datetime
 from jose import JWTError, jwt
 import json
+from pydantic import BaseModel
 
 from server.schemas import *
 from server.core.database import get_db
@@ -74,39 +75,45 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         raise credentials_exception
     return UserResponse(id=user.id, email=user.email)
 
-@router.post("/importSensorData", response_model=List[DetectedShockResponse])
-async def import_sensor_data(filename, raw_json:str , db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
-    try:
+class SendedData(BaseModel):
+    filename: str
+    raw_json: str
 
+@router.post("/importSensorData", response_model=List[DetectedShockResponse])
+async def import_sensor_data(data:SendedData , db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
+    filename, raw_json = data.filename, data.raw_json
+    json_data = json.loads(raw_json)
+    try:
         # Extract the sensor data from the raw json and calculate the detected shocks
-        data:SensorData = get_sensor_data(raw_json)
-        detecteds_shocks:ShockData = extract_shocks_sensor_data(data)
+        data:SensorData = get_sensor_data(json_data)
+        detecteds_shocks:ShockData = extract_shocks_sensor_data(json_data)
 
         # Store the raw data in the File table
-        created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=current_user.id, content=raw_json))
-
+        created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=current_user.id))
 
         coordinates = data.locations
-        coordinatesIds = []
+        coordinate_ids = []
         # Store the Coordinate
         for coord in coordinates:
-            created_coord = create_coordinate(db, coord.latitude, coord.longitude, coord.altitude)
-            coordinatesIds.append(created_coord.id)
+            created_coord = create_coordinate(db, CoordinateCreate(latitude=coord.latitude, longitude=coord.longitude, altitude=coord.altitude))
+            coordinate_ids.append(created_coord.id)
 
         # Store the Route
-        created_route:RouteResponse = create_route(db, current_user.id, filename, coordinatesIds)
+
+        created_route:RouteResponse = create_route(db, RouteCreate(user_id=current_user.id, coordinate_ids=coordinate_ids))
 
         # Store the DetectedShock
         detecteds_shocks_response = []
         for shock in detecteds_shocks:
-            db_shock:DetectedShockResponse = create_detected_shock(db,shockData_to_DetectedShockCreate(shock , current_user.id))
+            detected_shock_create = shockData_to_DetectedShockCreate(shock, current_user.id)
+            db_shock:DetectedShockResponse = create_detected_shock(db, detected_shock_create)
             detecteds_shocks_response.append(db_shock)
         return detecteds_shocks_response
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f'Internal Server Error: {str(e)}')
 
 
 # TODO Add a route to get all detected shocks for a user

@@ -32,7 +32,6 @@ def process_sensor_data(sensorData: SensorData) -> list[dict]:
         orientation = min(orientations, key=lambda x: abs(x['time'] - time))
         merged_data.append({**location, **accelerometer, **orientation})
 
-    print(merged_data)
     return merged_data
 
 def quaternion_to_rotation_matrix(qw, qx, qy, qz):
