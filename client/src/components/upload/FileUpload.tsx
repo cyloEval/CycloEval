@@ -34,13 +34,15 @@ const FileUpload: React.FC<FileUploadProps> = ({ onCancel }) => {
 
     if (file) {
       setFileName(file.name);
+      reader.readAsText(file);
     }
   };
 
   // send to api on upload
   const handleFileUpload = () => {
     if (rawData) {
-      sendSensorDataToApi(rawData);
+      console.log(localStorage.getItem("Accestoken") as string);
+      sendSensorDataToApi(rawData, localStorage.getItem("token") as string);
     } else {
       alert("Veuillez choisir un fichier.");
     }

@@ -1,11 +1,13 @@
 
 export const api = "http://127.0.0.1:8000";
 
-const sendSensorDataToApi = async (data: string) => {
+type token = string;
+const sendSensorDataToApi = async (data: string, token:token) => {
   const response = await fetch(`${api}/importSensorData`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ data }),
   });
