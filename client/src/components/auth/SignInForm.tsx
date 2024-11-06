@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
-import { api } from "../../lib/api";
+import { api, Token } from "../../lib/api";
 
-type token = {
-  access_token: string;
-  token_type: string;
-  email: string;
-}
 
 const SignInForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -72,11 +67,11 @@ const SignInForm: React.FC = () => {
       });
 
       if (response.ok) {
-        const data = await response.json() as token;
+        const data = await response.json() as Token;
         console.log(data);
         localStorage.setItem("accessToken", data.access_token);
         localStorage.setItem("tokenType", data.token_type);
-        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userEmail", data.email);
 
 
         // Handle successful login, e.g., save token, redirect, etc.

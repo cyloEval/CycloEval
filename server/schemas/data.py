@@ -55,7 +55,7 @@ class SensorData(BaseModel):
     locations: Optional[List[Location]]
     accelerometers: Optional[List[Accelerometer]]
 
-def get_sensor_data(json_data):
+def get_sensor_data(json_data: List[dict]) -> SensorData:
     metadata = Metadata(**json_data[0])
     locations = []
     accelerometers = []

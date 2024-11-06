@@ -26,14 +26,13 @@ def get_nearby_coordinate(db: Session, latitude: float, longitude: float, radius
             )
     return None
 
-
-def create_coordinate(db: Session, latitude: float, longitude: float, altitude: float = None) -> CoordinateResponse:
-    nearby_coordinate = get_nearby_coordinate(db, latitude, longitude)
+def create_coordinate(db: Session, coordinate:CoordinateCreate) -> CoordinateResponse:
+    nearby_coordinate = get_nearby_coordinate(db, latitude=coordinate.latitude, longitude=coordinate.longitude)
 
     if nearby_coordinate:
         return nearby_coordinate
 
-    db_coordinate = Coordinate(latitude=latitude, longitude=longitude, altitude=altitude)
+    db_coordinate = Coordinate(latitude=coordinate.latitude, longitude=coordinate.longitude, altitude=coordinate.altitude)
     db.add(db_coordinate)
     db.commit()
     db.refresh(db_coordinate)

@@ -2,11 +2,10 @@ import { useState } from "react";
 import FileInput from "./FileInput";
 import UploadButton from "./UploadButton";
 import ActionButtons from "./ActionButtons";
-import sendSensorDataToApi from "../../lib/api";
+import sendSensorDataToApi, { SensorData, Token } from "../../lib/api";
 
 type FileUploadProps = {
   onCancel: () => void;
-  sendDataToApi: (data: string) => void;
 };
 
 const FileUpload: React.FC<FileUploadProps> = ({ onCancel }) => {
@@ -41,8 +40,13 @@ const FileUpload: React.FC<FileUploadProps> = ({ onCancel }) => {
   // send to api on upload
   const handleFileUpload = () => {
     if (rawData) {
-      console.log(localStorage.getItem("Accestoken") as string);
-      sendSensorDataToApi(rawData, localStorage.getItem("token") as string);
+      const data: SensorData = { raw_json: rawData, filename: fileName };
+      try {
+        const res = sendSensorDataToApi(data);
+        console.log(res);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       alert("Veuillez choisir un fichier.");
     }
