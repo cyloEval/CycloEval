@@ -46,6 +46,7 @@ const SignInForm: React.FC = () => {
         // Handle successful account creation, e.g., save token, redirect, etc.
         console.log("Account creation successful:", data);
         toggleSignIn();
+        window.location.reload();
       } else {
         console.error("Account creation failed");
         setError("Account creation failed");
