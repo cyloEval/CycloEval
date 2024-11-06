@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router
 import Header from './components/header/Header';
 
 import MapComponent from './components/map/Map';
-import FileUpload from './components/upload/FileUpload';
+import FileUploadMenu from './components/upload/FileUploadMenu';
 import Footer from './components/Footer';
 import Contribution from './components/contribution';
 import { AuthProvider } from "./components/auth/AuthContext";
@@ -37,7 +37,7 @@ function App() {
         {showUpload && (
           <>
             <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
-            <FileUpload onCancel={handleCancelUpload} />
+            <FileUploadMenu onCancel={handleCancelUpload} />
           </>
         )}
         <Footer />

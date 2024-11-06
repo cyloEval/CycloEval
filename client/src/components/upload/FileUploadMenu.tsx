@@ -4,11 +4,11 @@ import UploadButton from "./UploadButton";
 import ActionButtons from "./ActionButtons";
 import sendSensorDataToApi, { SensorData, Token } from "../../lib/api";
 
-type FileUploadProps = {
+type FileUploadMenuProps = {
   onCancel: () => void;
 };
 
-const FileUpload: React.FC<FileUploadProps> = ({ onCancel }) => {
+const FileUploadMenu: React.FC<FileUploadMenuProps> = ({ onCancel }) => {
   const [fileName, setFileName] = useState<string>(
     "Choisissez un fichier json"
   );
@@ -63,4 +63,4 @@ const FileUpload: React.FC<FileUploadProps> = ({ onCancel }) => {
   );
 };
 
-export default FileUpload;
+export default FileUploadMenu;
