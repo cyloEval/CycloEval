@@ -5,46 +5,18 @@ root = true
 [*]
 charset = utf-8
 end_of_line = lf
-insert_final_newline = true
+insert_final_newline = false
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
-rulers = 120
-
-# Fichiers JavaScript, TypeScript (React & Node.js)
-[*.{js,jsx,ts,tsx}]
-indent_style = space
-indent_size = 2
-insert_final_newline = true
-trim_trailing_whitespace = true
 
 # Fichiers JSON (ex : package.json, prisma.schema, etc.)
 [*.json]
-indent_style = space
-indent_size = 2
-insert_final_newline = true
 trim_trailing_whitespace = false  # Permet de garder des espaces si besoin
-
-# Fichiers Prisma
-[*.prisma]
-indent_style = space
-indent_size = 2
-insert_final_newline = true
-trim_trailing_whitespace = true
-
-# Fichiers CSS, SCSS, et autres styles
-[*.{css,scss}]
-indent_style = space
-indent_size = 2
 
 # Fichiers Markdown
 [*.md]
 trim_trailing_whitespace = false  # Important pour éviter les sauts de ligne automatiques
-
-# HTML
-[*.html]
-indent_style = space
-indent_size = 2
 
 # Fichiers Python
 [*.py]

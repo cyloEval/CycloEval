@@ -1,45 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import MapComponent from './Map';
+import MapComponent, { MapComponentProps } from './Map';
 import MapFilter from './MapFilter';
-
-type ShockSample = {
-  id: number;
-  timestamp: string;
-  zAccel: number;
-  userId: number;
-  latitude: number;
-  longitude: number;
-  altitude: number;
-};
-
-type filterType = 'allShocks' | 'userShocks' | 'userRoutes' | 'allRoutes';
+import { apiRoute, getDataFromApi, filterType } from '../../lib/api';
 
 const MapContainer: React.FC = () => {
-  const [shockSamples, setShockSamples] = useState<ShockSample[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [routes, setRoutes] = useState<MapComponentProps['routes']>([]);
+  const [shocks, setShocks] = useState<MapComponentProps['shocks']>([]);
+  const [filters, setFilters] = useState<filterType[]>(['allShocks']);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('http://localhost:3001/shock-samples');
-      const data = await response.json();
-      setShockSamples(data);
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+    filters.forEach((filter) => {
+      getDataFromApi(filter as apiRoute).then((data) => {
+        switch (filter) {
+          case 'allShocks':
+            setShocks(data);
+            break;
+          case 'userShocks':
+            setShocks(data);
+            break;
+          case 'userRoutes':
+            setRoutes(data);
+            break;
+        }
+        console.log(data);
+      });
+    });
+  }, [filters]);
 
-  const handleFilterChange = (filter: filterType) => {
-    console.log(filter);
+  const handleFilterChange = (filters: filterType[]) => {
+    setRoutes([]);
+    setShocks([]);
+    setFilters(filters);
   };
 
   return (
-    <div className="flex justify-center">
-      <MapComponent
-      // routes={routes}
-      // shocks={shocks}
-      // loading={loading}
+    <div className="flex justify-center align-middle">
+      <MapComponent routes={routes} shocks={shocks} />
+      <MapFilter
+        onFilterChange={(filters: string[]) =>
+          handleFilterChange(filters as filterType[])
+        }
       />
-      <MapFilter onFilterChange={(filter: string) => handleFilterChange(filter as filterType)} />
     </div>
   );
 };

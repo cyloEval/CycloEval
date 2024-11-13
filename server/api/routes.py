@@ -13,8 +13,7 @@ from server.crud import (
     create_coordinate, get_nearby_coordinate,
     create_user, authenticate_user, get_user_by_email, get_user,
     create_detected_shock, get_shocks_by_user_with_coord, shockData_to_DetectedShockCreate, get_all_shocks,
-    create_file,
-    create_route
+    create_file, create_route, get_routes_by_user
 )
 from server.core.security import verify_password, create_access_token, oauth2_scheme
 from server.core.config import settings
@@ -26,6 +25,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
 
 @router.post("/auth/register", response_model=UserResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
@@ -54,7 +54,7 @@ def login(user: UserSignIn, db: Session = Depends(get_db)):
         data={"sub": authenticated_user.email}, expires_delta=access_token_expires
     )
     logger.info(f"User logged in successfully: {user.email}")
-    return {"access_token": access_token, "token_type": "bearer", "email": authenticated_user.email}
+    return Token(access_token=access_token, token_type="bearer", email=authenticated_user.email, user_id=authenticated_user.id)
 
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> UserResponse:
     credentials_exception = HTTPException(
@@ -67,10 +67,9 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception
-    user = get_user_by_email(db, email=token_data.email)
+    user = get_user_by_email(db, email=email)
     if user is None:
         raise credentials_exception
     return UserResponse(id=user.id, email=user.email)
@@ -115,9 +114,18 @@ async def import_sensor_data(data:SendedData , db: Session = Depends(get_db), cu
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'Internal Server Error: {str(e)}')
 
+# type filterType = 'allShocks' | 'userShocks' | 'userRoutes'
 
-# TODO Add a route to get all detected shocks for a user
 
-# TODO Add a route to get all detected shocks for a user within a certain time range
 
-# TODO Add a route to get all detected shocks for a user within a certain location range
+@router.get("/userShocks", response_model=List[DetectedShockResponse])
+def get_shocks(db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
+    return get_shocks_by_user_with_coord(db, current_user.id)
+
+@router.get("/allShocks", response_model=List[DetectedShockResponse])
+def get_all_shocks_route(db: Session = Depends(get_db)):
+    return get_all_shocks(db)
+
+@router.get("/userRoutes", response_model=List[RouteResponseWithCoordinates])
+def get_routes(db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
+    return get_routes_by_user(db, current_user.id)
