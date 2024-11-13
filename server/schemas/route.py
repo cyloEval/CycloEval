@@ -11,4 +11,12 @@ class RouteResponse(BaseModel):
     coordinate_ids: List[int]
     model_config = ConfigDict(from_attributes=True)
 
+class RouteResponseWithCoordinates(BaseModel):
+    id: int
+    user_id: int
+    latitude: List[float]
+    longitude: List[float]
+    altitude: List[float]
+    model_config = ConfigDict(from_attributes=True)
+
 

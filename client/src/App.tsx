@@ -1,20 +1,16 @@
-
-import { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
+import { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './components/header/Header';
-import MapComponent from './components/map/Map';
 import FileUploadMenu from './components/upload/FileUploadMenu';
 import Footer from './components/Footer';
 import Contribution from './components/contribution';
-import { AuthProvider } from "./components/auth/AuthContext";
+import { AuthProvider } from './components/auth/AuthContext';
+import MapContainer from './components/map/MapContainer';
 
 function App() {
-    const [showUpload, setShowUpload] = useState(false);
-    const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
-    const navigate = useNavigate();
-
-
-
+  const [showUpload, setShowUpload] = useState(false);
+  const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
+  const navigate = useNavigate();
 
   const handleCancelUpload = () => {
     setShowUpload(false);
@@ -22,12 +18,11 @@ function App() {
 
   const handleContinueUpload = () => {
     setShowUpload(false);
-  }
+  };
 
   const toggleUpload = () => {
     setShowUpload(!showUpload);
-    };
-
+  };
 
   return (
     <AuthProvider>
@@ -37,19 +32,16 @@ function App() {
       >
         <Header onUploadClick={toggleUpload} />
         {showUpload && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
-            <FileUploadMenu
-              onCancel={handleCancelUpload}
-              onContinue={handleContinueUpload}
-            />
+          <div className="fixed inset-0 z-40 bg-black bg-opacity-50">
+            <FileUploadMenu onCancel={handleCancelUpload} onContinue={handleContinueUpload} />
           </div>
         )}
-        <MapComponent />
+        <MapContainer />
         <Footer />
         <div
-          className=" p-3.5 m-20 bg-white border-2 border-[#8a4a7d] rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:bg-gray-100 text-center"
-          style={{ width: "20%" }}
-          onClick={() => navigate("/contribution")}
+          className="m-20 transform cursor-pointer rounded-lg border-2 border-[#8a4a7d] bg-white p-3.5 text-center transition duration-300 ease-in-out hover:bg-gray-100"
+          style={{ width: '20%' }}
+          onClick={() => navigate('/contribution')}
         >
           Comment contribuer
         </div>
@@ -59,12 +51,12 @@ function App() {
 }
 
 export default function AppWithRouter() {
-    return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/contribution" element={<Contribution />} />
-        </Routes>
-      </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/contribution" element={<Contribution />} />
+      </Routes>
+    </Router>
+  );
 }

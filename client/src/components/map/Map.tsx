@@ -11,22 +11,18 @@ type Shock = {
   altitude: number;
 };
 
-
-
-const MapComponent: React.FC= () => {
+const MapComponent: React.FC = () => {
   const mapRef = React.useRef(null);
 
   return (
-    <div
-      className="flex justify-center text-center align-middle pt-24"
-    >
+    <div className="flex justify-center pt-24 text-center align-middle">
       <MapContainer
         ref={mapRef}
         className="map"
         center={[44.8, -0.6]}
         zoom={12}
         scrollWheelZoom={false}
-        style={{zIndex: 30}}
+        style={{ zIndex: 30 }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
