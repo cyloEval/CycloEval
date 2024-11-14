@@ -27,7 +27,7 @@
 
 1. Install Python dependencies:
     ```shell
-    pip install -r requirements.txt
+    pip install -r serveur/requirements.txt
     ```
 
 2. Start the FastAPI server:
