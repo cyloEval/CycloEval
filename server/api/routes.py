@@ -1,6 +1,8 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Request,  HTTPException
 from sqlalchemy.orm import Session
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from typing import List
 from datetime import timedelta, datetime
 from jose import JWTError, jwt
@@ -41,6 +43,68 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     except Exception as e:
         logger.error("Error during registration: %s", str(e))
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+
+
+@router.post("/auth/google-auth")
+async def google_auth(request: Request, db: Session = Depends(get_db)):
+    try:
+        # Récupérer le contenu JSON envoyé par le frontend
+        data = await request.json()
+        logger.info("Données reçues : %s", data)
+        
+        id_token_google = data.get("id_token")
+        if not id_token_google:
+            logger.error("Token Google manquant")
+            raise HTTPException(status_code=400, detail="Missing id_token")
+
+        # Vérifier le token Google
+        try:
+            id_info = id_token.verify_oauth2_token(
+                id_token_google,
+                requests.Request(),
+                settings.GOOGLE_CLIENT_ID
+            )
+            logger.info("Informations de l'utilisateur Google : %s", id_info)
+        except ValueError as e:
+            logger.error("Échec de la vérification du token : %s", str(e))
+            raise HTTPException(status_code=400, detail="Invalid token")
+
+        # Extraire l'email depuis le token
+        email = id_info.get("email")
+        
+        if not email:
+            logger.error("Email non trouvé dans le token")
+            raise HTTPException(status_code=400, detail="Email not found in token")
+
+        # Vérifier si l'utilisateur existe déjà
+        user = get_user_by_email(db, email)
+        if not user:
+            logger.info("Utilisateur non trouvé, création d'un nouveau compte")
+            # Créer un nouvel utilisateur sans mot de passe
+            user_create = UserCreate(email=email, password="")
+            user = create_user(db, user_create)
+        else:
+            logger.info("Utilisateur existant trouvé : %s", user.email)
+
+        # Générer un token JWT pour l'utilisateur
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
+
+        logger.info("Authentification réussie pour : %s", user.email)
+        return {"access_token": access_token, "token_type": "bearer", "email": user.email}
+
+    except Exception as e:
+        logger.error("Erreur interne du serveur : %s", str(e))
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+
+
+
 
 @router.post("/auth/login", response_model=Token)
 def login(user: UserSignIn, db: Session = Depends(get_db)):

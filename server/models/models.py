@@ -15,7 +15,7 @@ class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=True)
     createdAt = Column(DateTime, default=datetime.now)  # Correction : sans parenthèses
 
     detected_shocks = relationship("DetectedShock", back_populates="user")

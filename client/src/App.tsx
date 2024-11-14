@@ -8,6 +8,8 @@ import Footer from './components/Footer';
 import Contribution from './components/contribution';
 import { AuthProvider } from "./components/auth/AuthContext";
 
+
+
 function App() {
     const [showUpload, setShowUpload] = useState(false);
     const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
@@ -44,7 +46,7 @@ function App() {
             />
           </div>
         )}
-        <MapComponent />
+        {/* <MapComponent /> */}
         <Footer />
         <div
           className=" p-3.5 m-20 bg-white border-2 border-[#8a4a7d] rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:bg-gray-100 text-center"
@@ -55,6 +57,7 @@ function App() {
         </div>
       </div>
     </AuthProvider>
+  
   );
 }
 
