@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import { api, Token } from "../../lib/api";
 import { GoogleLogin } from '@react-oauth/google';
-import  {jwtDecode} from 'jwt-decode'
+// import  {jwtDecode} from 'jwt-decode'
 
 
 const SignInForm: React.FC = () => {
@@ -171,8 +171,7 @@ const SignInForm: React.FC = () => {
         onSuccess={credentialResponse => {
           
           if (credentialResponse.credential) { // Check if credential is defined
-            const credentialResponseDecode = jwtDecode(credentialResponse.credential);
-            console.log(credentialResponseDecode);
+            // const credentialResponseDecode = jwtDecode(credentialResponse.credential);
             handleGoogleAuth(credentialResponse.credential);
         } else {
             console.log('No credential received');
