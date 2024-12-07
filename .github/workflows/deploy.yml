@@ -1,0 +1,42 @@
+name: Deploy to Target Server via Bastion with Deploy Keys
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH for Bastion and Target Servers
+      run: |
+        mkdir -p ~/.ssh
+        # Bastion deploy key
+        echo "${{ secrets.INTERMEDIATE_SSH_KEY }}" > ~/.ssh/bastion_id_rsa
+        chmod 600 ~/.ssh/bastion_id_rsa
+        ssh-keyscan -H ${{ secrets.BASTION_HOST }} >> ~/.ssh/known_hosts
+
+        # Target deploy key
+        echo "${{ secrets.TARGET_DEPLOY_KEY }}" > ~/.ssh/target_id_rsa
+        chmod 600 ~/.ssh/target_id_rsa
+        ssh-keyscan -H ${{ secrets.TARGET_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy via Bastion Host
+      run: |
+        ssh -i ~/.ssh/bastion_id_rsa -A ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} << 'EOF'
+          ssh -i ~/.ssh/target_id_rsa ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} << 'INNER'
+            cd /home/${{ secrets.TARGET_USER }}/app
+            docker build -t localhost:32000/frontend:latest -f client/Dockerfile ./client
+            docker push localhost:32000/frontend:latest
+            docker build -t localhost:32000/backend:latest -f server/Dockerfile ./server
+            docker push localhost:32000/backend:latest
+
+            microk8s kubectl apply -f k8s/client-deployment.yaml
+            microk8s kubectl apply -f k8s/server-deployment.yaml
+          INNER
+        EOF
