@@ -15,16 +15,7 @@ jobs:
 
     - name: Set up SSH for Bastion and Target Servers
       run: |
-        mkdir -p ~/.ssh
-        # Bastion deploy key
-        echo "${{ secrets.INTERMEDIATE_SSH_KEY }}" > ~/.ssh/bastion_id_rsa
-        chmod 600 ~/.ssh/bastion_id_rsa
-        ssh-keyscan -H ${{ secrets.BASTION_HOST }} >> ~/.ssh/known_hosts
-
-        # Target deploy key
-        echo "${{ secrets.TARGET_DEPLOY_KEY }}" > ~/.ssh/target_id_rsa
-        chmod 600 ~/.ssh/target_id_rsa
-        ssh-keyscan -H ${{ secrets.TARGET_HOST }} >> ~/.ssh/known_hosts
+        ssh ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }}
 
     - name: Deploy via Bastion Host
       run: |
