@@ -31,5 +31,3 @@ jobs:
 
             microk8s kubectl apply -f k8s/client-deployment.yaml
             microk8s kubectl apply -f k8s/server-deployment.yaml
-          INNER
-        EOF
