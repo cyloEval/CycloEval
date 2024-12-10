@@ -1,3 +1,7 @@
+name: Deploy to Target Server via Bastion with Deploy Keys
+
+on:
+  push:
     branches:
       - main
 
