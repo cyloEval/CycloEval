@@ -1,0 +1,26 @@
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH for Bastion and Target Servers
+      run: |
+        
+        ssh -N ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} << secrets.BASTION_DEPLOY_KEY  
+        ssh ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }} << secrets.TARGET_DEPLOY_KEY
+        
+    - name: Deploy via Bastion Host
+      run: |
+            cd ~/CycloEval
+            docker build -t localhost:32000/frontend:latest -f client/Dockerfile ./client
+            docker push localhost:32000/frontend:latest
+            docker build -t localhost:32000/backend:latest -f server/Dockerfile ./server
+            docker push localhost:32000/backend:latest
+            microk8s kubectl apply -f k8s/client-deployment.yaml
+            microk8s kubectl apply -f k8s/server-deployment.yaml
