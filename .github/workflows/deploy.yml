@@ -21,7 +21,8 @@ jobs:
         chmod 600 ~/.ssh/bastion_deploy_key
         sshpass -f ~/.ssh/bastion_deploy_key ssh -T ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} 
         mkdir -p bastion
-        # echo "DONE"
+      
+      # echo "DONE"
         # ssh -T ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}
         # ${{ secrets.TARGET_DEPLOY_KEY }}
 
