@@ -16,6 +16,7 @@ jobs:
     - name: Set up SSH for Bastion and Target Servers
       run: |
         sudo apt-get install sshpass 
+        mkdir -p ~/.ssh
         echo "${{ secrets.BASTION_DEPLOY_KEY }}" > ~/.ssh/bastion_deploy_key
         sshpass -f ~/.ssh/bastion_deploy_key ssh ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} 
         ssh ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}
