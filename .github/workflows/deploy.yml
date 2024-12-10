@@ -18,8 +18,8 @@ jobs:
         sudo apt-get install sshpass 
         mkdir -p ~/.ssh
         echo "${{ secrets.BASTION_DEPLOY_KEY }}" > ~/.ssh/bastion_deploy_key
-        sshpass -f ~/.ssh/bastion_deploy_key ssh ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} 
-        ssh ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}
+        sshpass -f ~/.ssh/bastion_deploy_key ssh -T ${{ secrets.BASTION_USER }}@${{ secrets.BASTION_HOST }} 
+        ssh -T ${{ secrets.TARGET_USER }}@${{ secrets.TARGET_HOST }}
         ${{ secrets.TARGET_DEPLOY_KEY }}\r
 
     - name: Deploy via Bastion Host
