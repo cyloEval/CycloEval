@@ -7,8 +7,6 @@ import Contribution from './components/contribution';
 import { AuthProvider } from './components/auth/AuthContext';
 import MapContainer from './components/map/MapContainer';
 
-
-
 function App() {
   const [showUpload, setShowUpload] = useState(false);
   const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
@@ -49,7 +47,6 @@ function App() {
         </div>
       </div>
     </AuthProvider>
-  
   );
 }
 

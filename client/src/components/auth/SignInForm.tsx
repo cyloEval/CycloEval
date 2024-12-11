@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import { api, Token } from "../../lib/api";
-import { GoogleLogin } from '@react-oauth/google';
-import  {jwtDecode} from 'jwt-decode'
 
 
 const SignInForm: React.FC = () => {
@@ -92,41 +90,6 @@ const SignInForm: React.FC = () => {
     }
   };
 
-
-  const handleGoogleAuth = async (idToken: string) => {
-    try {
-      // Appel à la route backend pour l'authentification
-      const response = await fetch(`${api}/auth/google-auth`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_token: idToken }),
-      });
-  
-      if (response.ok) {
-        console.log("reponse ---------------------");
-        const data = await response.json();
-        console.log("User authenticated:", data);
-        // Sauvegarder le token dans le localStorage
-        localStorage.setItem("accessToken", data.access_token);
-        localStorage.setItem("userEmail", data.email);
-        
-  
-        // Rediriger ou mettre à jour l'état de votre application
-        // window.location.reload();
-        console.log("Login successful:", data);
-        toggleSignIn();
-        setUserEmail(data.email);
-      } else {
-        console.log("pas de reponse ---------------------");
-        const errorData = await response.json();
-        console.error("Erreur lors de l'authentification Google:", errorData.detail);
-      }
-    } catch (error) {
-      console.error("Erreur réseau:", error);
-    }
-  };
-  
-
   return (
     <form className="bg-purple-600 text-lg border border-purple-700 p-6 rounded-lg shadow-lg text-black">
       <div className="mb-4">
@@ -167,22 +130,6 @@ const SignInForm: React.FC = () => {
         >
           Sign In
         </button>
-         <GoogleLogin
-        onSuccess={credentialResponse => {
-          
-          if (credentialResponse.credential) { // Check if credential is defined
-            const credentialResponseDecode = jwtDecode(credentialResponse.credential);
-            console.log(credentialResponseDecode);
-            handleGoogleAuth(credentialResponse.credential);
-        } else {
-            console.log('No credential received');
-        }
-        }}
-        onError={() => {
-          console.log('Login Failed');
-        }}
-      />
-
         <button
           type="button"
           onClick={handleCreateAccount}
