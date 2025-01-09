@@ -30,14 +30,14 @@ const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
   const userId = localStorage.getItem('userId');
 
   return (
-    <div className="flex justify-center pt-24 text-center align-middle">
+    <div className="flex justify-center pt-24 text-center align-middle ">
       <MapContainer
         ref={mapRef}
         className="map"
         center={[44.8, -0.6]}
         zoom={12}
         scrollWheelZoom={false}
-        style={{ zIndex: 30 }}
+        style={{  zIndex: 30}}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

@@ -33,17 +33,17 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
       <div className="flex w-1/6 border border-white rounded-sm h-17 hover:scale-115 transition-transform">
         <img src={logoEtuderecup} className="logo" alt="logo_etude_recup" />
       </div>
-      {isSignedIn && userEmail ? (
+      {/* {isSignedIn && userEmail ? ( */}
         <div>
-          <p className="text-white text-lg">Bienvenue {userEmail}</p>
+          <p className="text-white text-lg">Bienvenue </p>
         </div>
-      ) : null}
+       {/* ) : null} */}
       <div className="flex items-center space-x-4">
         <ImportFileButton
-          isSignedIn={isSignedIn}
+          // isSignedIn={isSignedIn}
           handleUploadClick={handleUploadClick}
         />
-        {isSignedIn ? (
+        {/* {isSignedIn ? (
           <SignOutButton onClick={signOut} />
         ) : (
           <>
@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
               </div>
             )}
           </>
-        )}
+        )} */}
         <ContactButton />
       </div>
     </header>

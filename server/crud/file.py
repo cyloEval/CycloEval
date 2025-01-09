@@ -3,10 +3,15 @@ from server.models import File
 from server.schemas import FileCreate, FileResponse, FileResponseShort
 
 def create_file(db: Session, FileCreate: FileCreate) -> FileResponseShort:
+    print("----------- arrive1")
+
     db_file = File(name=FileCreate.filename, user_id=FileCreate.user_id)
+    print("----------- arrive2")
     db.add(db_file)
+    print("----------- arrive3")
     db.commit()
     db.refresh(db_file)
+    print("----------- arrive")
     return FileResponseShort(
         id=db_file.id,
         filename=db_file.name,

@@ -7,8 +7,6 @@ import Contribution from './components/contribution';
 import { AuthProvider } from './components/auth/AuthContext';
 import MapContainer from './components/map/MapContainer';
 
-
-
 function App() {
   const [showUpload, setShowUpload] = useState(false);
   const [showTheme, setShowTheme] = useState(false); // Nouvel etat pour la thematique
@@ -30,7 +28,7 @@ function App() {
     <AuthProvider>
       <div
         className="relative h-screen w-screen bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/appVelo.jpg')" }}
+        // style={{ backgroundImage: "url('/appVelo.jpg')" }}
       >
         <Header onUploadClick={toggleUpload} />
         {showUpload && (
@@ -38,7 +36,7 @@ function App() {
             <FileUploadMenu onCancel={handleCancelUpload} onContinue={handleContinueUpload} />
           </div>
         )}
-        <MapContainer />
+          <MapContainer />
         <Footer />
         <div
           className="m-20 transform cursor-pointer rounded-lg border-2 border-[#8a4a7d] bg-white p-3.5 text-center transition duration-300 ease-in-out hover:bg-gray-100"
@@ -49,7 +47,6 @@ function App() {
         </div>
       </div>
     </AuthProvider>
-  
   );
 }
 

@@ -37,7 +37,7 @@ const MapFilter: React.FC<MapFilterProps> = ({ onFilterChange }) => {
           onCheckboxChange={handleFilterChange}
           value="allShocks"
         />
-        {isSignedIn && (
+     
           <>
             <CheckBox
               label="User Shocks"
@@ -52,7 +52,7 @@ const MapFilter: React.FC<MapFilterProps> = ({ onFilterChange }) => {
               value="userRoutes"
             />
           </>
-        )}
+        
       </div>
     </div>
   );

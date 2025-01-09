@@ -13,6 +13,7 @@ const MapContainer: React.FC = () => {
       getDataFromApi(filter as apiRoute).then((data) => {
         switch (filter) {
           case 'allShocks':
+            console.log("________"+data)
             setShocks(data);
             break;
           case 'userShocks':
@@ -34,13 +35,14 @@ const MapContainer: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center align-middle">
+    <div className="flex justify-center align-middle ">
+      
       <MapComponent routes={routes} shocks={shocks} />
-      <MapFilter
+      {/* <MapFilter
         onFilterChange={(filters: string[]) =>
           handleFilterChange(filters as filterType[])
         }
-      />
+      /> */}
     </div>
   );
 };

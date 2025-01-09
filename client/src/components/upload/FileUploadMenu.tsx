@@ -49,6 +49,7 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
     if (rawData) {
       const data: SensorData = { raw_json: rawData, filename: fileName };
       try {
+        console.log(data);
         const res = await sendSensorDataToApi(data);
         console.log(res);
       } catch (error) {
