@@ -35,14 +35,14 @@ const MapContainer: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center align-middle ">
+    <div className="flex justify-center align-middle w-full">
       
       <MapComponent routes={routes} shocks={shocks} />
-      {/* <MapFilter
+      <MapFilter
         onFilterChange={(filters: string[]) =>
           handleFilterChange(filters as filterType[])
         }
-      /> */}
+      />
     </div>
   );
 };

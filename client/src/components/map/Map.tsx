@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer, Circle, Polyline } from 'react-leaflet';
+import { filterType } from '../../lib/api';
+import MapFilter from './MapFilter';
 
 type Shock = {
   id: number;
@@ -25,19 +27,22 @@ export type MapComponentProps = {
 };
 
 const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
+  
+
   const mapRef = React.useRef(null);
 
   const userId = localStorage.getItem('userId');
 
+
   return (
-    <div className="flex justify-center pt-24 text-center align-middle ">
+    <div className="flex justify-center text-center align-middle w-full h-[100vh]">
       <MapContainer
         ref={mapRef}
         className="map"
         center={[44.8, -0.6]}
         zoom={12}
         scrollWheelZoom={false}
-        style={{  zIndex: 30}}
+        style={{width: '100%', height: '100%',  zIndex: 30}}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -69,6 +74,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
         ))}
       </MapContainer>
     </div>
+    
+
   );
 };
 
