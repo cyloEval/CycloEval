@@ -16,6 +16,15 @@ app.add_middleware(
     allow_headers=["*"],  # Permettre tous les headers
 )
 
+@app.get("/debug-cors")
+async def debug_cors():
+    return {
+        "allow_origins": app.user_middleware[0].options["allow_origins"],
+        "allow_methods": app.user_middleware[0].options["allow_methods"],
+        "allow_headers": app.user_middleware[0].options["allow_headers"],
+       }
+
+
 app.include_router(api_router)
 
 if __name__ == "__main__":
