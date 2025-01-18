@@ -14,7 +14,7 @@ export type filterType = 'allShocks' | 'userShocks' | 'userRoutes';
 
 export type apiRoute = 'importSensorData' | 'user/me' | filterType;
 
-export const api = '/api';
+export const api = 'http://127.0.0.1:8000';
 
 // const getTokenFromLocal = () => {
 //   const token: Token = {
@@ -31,14 +31,13 @@ export const api = '/api';
 
 export const getDataFromApi = async (route: apiRoute) => {
   const response = await fetch(`${api}/${route}`);
-  
+
   if (!response.ok) {
     throw new Error('Failed to fetch data');
   }
-  
+
   return response.json();
 };
-
 
 // export const sendSensorDataToApi = async (data: SensorData) => {
 //   const token = getTokenFromLocal();
@@ -57,17 +56,17 @@ export const getDataFromApi = async (route: apiRoute) => {
 //   return response.json();
 // };
 
-  export const sendSensorDataToApi = async (data: SensorData) => {
-    const response = await fetch(`${api}/importSensorData`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ raw_json: data.raw_json, filename: data.filename }),
-    });
+export const sendSensorDataToApi = async (data: SensorData) => {
+  const response = await fetch(`${api}/importSensorData`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ raw_json: data.raw_json, filename: data.filename }),
+  });
 
-    if (!response.ok) {
-      throw new Error('Failed to upload file');
-    }
-    return response.json();
-  };
+  if (!response.ok) {
+    throw new Error('Failed to upload file');
+  }
+  return response.json();
+};

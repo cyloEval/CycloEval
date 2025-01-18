@@ -121,10 +121,11 @@ async def import_sensor_data(data: SendedData, db: Session = Depends(get_db)):
         # Extract the sensor data from the raw json and calculate the detected shocks
         print("----------------------------------1")
         data: SensorData = get_sensor_data(json_data)
+        print("----------------------------------1.5")
         detecteds_shocks: ShockData = extract_shocks_sensor_data(json_data)
         print("----------------------------------2")
         print(filename)
-        
+
         # Store the raw data in the File table
         created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=1))
         print("---------------data")
