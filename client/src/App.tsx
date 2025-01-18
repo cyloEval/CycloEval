@@ -41,7 +41,7 @@ function App() {
             />
           </div>
         )}
-        <div className='h-[100vh]" w-[100%]'>
+        <div className="h-full w-full">
           <MapContainer />
         </div>
         {/* <Footer />
