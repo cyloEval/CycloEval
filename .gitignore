@@ -2,6 +2,7 @@
 node_modules/
 client/node_modules/
 server/node_modules/
+nginx/*
 
 # dist folders
 client/dist/
@@ -9,7 +10,7 @@ server/dist/
 webhook_listener.py
 webhook_listener.Dockerfile
 requirements.txt
-nginx/
+deploy.sh
 # lockfiles
 pnpm-lock.yaml
 
