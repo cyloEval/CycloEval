@@ -38,11 +38,13 @@ const MapContainer: React.FC = () => {
     <div className="flex justify-center align-middle w-full">
       
       <MapComponent routes={routes} shocks={shocks} />
+      <div className="w-21">
       <MapFilter
         onFilterChange={(filters: string[]) =>
           handleFilterChange(filters as filterType[])
         }
       />
+      </div>
     </div>
   );
 };

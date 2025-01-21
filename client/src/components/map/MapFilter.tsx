@@ -28,7 +28,7 @@ const MapFilter: React.FC<MapFilterProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center p-2">
       <div className="w-full max-w-xs space-y-4 rounded-lg p-4 shadow-lg bg-slate-200/40">
         <h2 className="text-center text-2xl  text-black-100">Filters</h2>
         <CheckBox
