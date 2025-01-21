@@ -90,7 +90,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
         {routes.map((route) => (
           <Polyline
             key={route.id}
-            pathOptions={{ color: 'blue'}}
+            pathOptions={{ color: 'blue' }}
             positions={route.latitude.map((lat, i) => [
               lat,
               route.longitude[i],

@@ -16,6 +16,13 @@ services:
     networks:
       - web
 
+  webhook_listener:
+    build:
+      context: ./  # Assuming the webhook listener is in the root
+      dockerfile: ./webhook_listener.Dockerfile  # Create this Dockerfile
+    container_name: webhook_listener
+    networks:
+      - web
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
@@ -28,6 +35,7 @@ services:
     depends_on:
       - frontend
       - backend
+      - webhook_listener
 
     environment:
       - client_max_body_size=50M

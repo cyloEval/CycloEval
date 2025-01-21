@@ -31,7 +31,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <div className="relative h-screen w-screen bg-cover bg-center bg-no-repeat">
+      <div className="relative h-screen w-screen bg-cover bg-center bg-no-repeat overflow-hidden">
         <Header onUploadClick={toggleUpload} />
         {showUpload && (
           <div className="fixed inset-0 z-40 bg-black bg-opacity-50">
@@ -41,17 +41,9 @@ function App() {
             />
           </div>
         )}
-        <div className="h-full w-full">
+        <div className='h-full" w-full'>
           <MapContainer />
         </div>
-        {/* <Footer />
-        <div
-          className="m-20 transform cursor-pointer rounded-lg border-2 border-[#8a4a7d] bg-white p-3.5 text-center transition duration-300 ease-in-out hover:bg-gray-100"
-          style={{ width: '20%' }}
-          onClick={() => navigate('/contribution')}
-        >
-          Comment contribuer
-        </div> */}
       </div>
     </AuthProvider>
   );
