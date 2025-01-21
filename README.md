@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js and npm (or pnpm)
+- Node.js 18+ and npm (or pnpm)
 - Python 3.8+
 - pip (Python package installer)
 
