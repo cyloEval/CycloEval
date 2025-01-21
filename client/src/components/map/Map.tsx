@@ -41,7 +41,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
         className="map"
         center={[44.8, -0.6]}
         zoom={12}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         style={{width: '100%', height: '100%',  zIndex: 30}}
       >
         <TileLayer
