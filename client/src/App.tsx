@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import Header from './components/header/Header';
 import FileUploadMenu from './components/upload/FileUploadMenu';
-import Footer from './components/Footer';
+import Contact from './components/header/Contact';
 import Contribution from './components/contribution';
 import { AuthProvider } from './components/auth/AuthContext';
 import MapContainer from './components/map/MapContainer';
@@ -55,6 +55,7 @@ export default function AppWithRouter() {
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/contribution" element={<Contribution />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );
