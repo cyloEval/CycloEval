@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js and npm (or pnpm)
+- Node.js 18+ and npm (or pnpm)
 - Python 3.8+
 - pip (Python package installer)
 
@@ -72,7 +72,7 @@
     - `data_processing.py`: Functions for processing sensor data and detecting shocks.
   - `tests/`: Test cases for the backend.
     - `test_main.py`: Tests for the main application.
-    - `test_data_processing.py`: Tests for data processing function.
+    - `test_data_processing.py`: Tests for data processing functions.
     - `test_database.py`: Tests for database operations.
   - `main.py`: Entry point for the FastAPI application.
 

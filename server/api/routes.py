@@ -170,4 +170,4 @@ def get_all_shocks_route(db: Session = Depends(get_db)):
 
 @router.get("/userRoutes", response_model=List[RouteResponseWithCoordinates])
 def get_routes(db: Session = Depends(get_db)):
-    return get_routes_by_user(db, None)
+    return get_routes_by_user(db, 1)
