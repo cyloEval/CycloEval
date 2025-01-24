@@ -84,7 +84,7 @@ const MapComponent = ({ GPSPoints }: MapComponentProps) => {
 
         {GPSPoints.map((point) => (
           <React.Fragment key={point.id}>
-            {[0.8].map((factor, index) => (
+            {[0.9, 0.6, 0.2].map((factor, index) => (
               <Circle
                 key={index}
                 center={[point.latitude, point.longitude]}
