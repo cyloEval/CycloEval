@@ -6,35 +6,25 @@ import {
   Polyline,
   useMapEvents,
 } from 'react-leaflet';
-import { filterType } from '../../lib/api';
-import MapFilter from './MapFilter';
 
-type Shock = {
+type GPSPointsType = {
   id: number;
-  timestamp: string;
-  zAccel: number;
-  userId: number;
   latitude: number;
   longitude: number;
   altitude: number;
-};
-
-type Route = {
-  id: number;
-  user_id: number;
-  latitude: number[];
-  longitude: number[];
-  altitude: number[];
+  horizontalAccuracy: number;
+  verticalAccuracy: number;
+  speedAccuracy: number;
+  zAccel: number;
+  timestamp: string;
 };
 
 export type MapComponentProps = {
-  routes: Route[];
-  shocks: Shock[];
+  GPSPoints: GPSPointsType[];
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
   const mapRef = React.useRef<L.Map | null>(null);
-  const userId = localStorage.getItem('userId');
   const [zoomLevel, setZoomLevel] = useState(12);
 
   const putToScaleRadius = (zoomLevel: number) => {
@@ -72,29 +62,13 @@ const MapComponent: React.FC<MapComponentProps> = ({ routes, shocks }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {shocks.map((shock: Shock) => (
+        {GPSPoints.map((point) => (
           <Circle
-            key={shock.id}
-            center={[shock.latitude, shock.longitude]}
-            radius={putToScaleRadius(zoomLevel)}
-            color={
-              shock.userId === Number(userId)
-                ? 'green'
-                : Math.abs(shock.zAccel) > 4
-                  ? 'red'
-                  : 'blue'
-            }
-          />
-        ))}
-
-        {routes.map((route) => (
-          <Polyline
-            key={route.id}
-            pathOptions={{ color: 'blue' }}
-            positions={route.latitude.map((lat, i) => [
-              lat,
-              route.longitude[i],
-            ])}
+            key={point.id}
+            center={[point.latitude, point.longitude]}
+            radius={point.horizontalAccuracy}
+            pathOptions={{ color: 'red' }}
+            fillOpacity={0.5}
           />
         ))}
       </MapContainer>

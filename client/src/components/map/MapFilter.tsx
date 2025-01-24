@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
 
 type MapFilterProps = {
   onFilterChange: (filter: string[]) => void;
@@ -9,7 +8,6 @@ const MapFilter: React.FC<MapFilterProps> = ({ onFilterChange }) => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([
     'allShocks',
   ]);
-  const { isSignedIn } = useAuth();
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const filter = event.target.value;

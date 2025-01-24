@@ -55,41 +55,6 @@ class SensorData(BaseModel):
     locations: Optional[List[Location]]
     accelerometers: Optional[List[Accelerometer]]
 
-def get_sensor_data(json_data: List[dict]) -> SensorData:
-    try:
-        if json_data[0].get("sensor") == "Metadata":
-            metadata = Metadata(**json_data[0])
-        else:
-            metadata = None
-        locations = []
-        accelerometers = []
-        orientations = []
-
-        for data in json_data:
-            sensor_type = data.get("sensor")
-            if sensor_type == "Location":
-                locations.append(Location(**data))
-            elif sensor_type == "Accelerometer":
-                accelerometers.append(Accelerometer(**data))
-            elif sensor_type == "Orientation":
-                orientations.append(Orientation(**data))
-        print('end of try')
-    except Exception as e:
-        print(e)
-        return SensorData(
-            metadata=None,
-            locations=None,
-            accelerometers=None,
-            orientations=None
-            )
-
-    return SensorData(
-        metadata=metadata,
-        locations=locations,
-        accelerometers=accelerometers,
-        orientations=orientations
-    )
-
 # # Example usage
 # json_data = [
 #     {
