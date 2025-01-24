@@ -10,7 +10,7 @@ app = FastAPI()
 # Configuration des CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://cycloeval.datakelabsone.cloud"],  # Permettre toutes les origines, à restreindre en production
+    allow_origins=["https://cycloeval.datakelabsone.cloud", "http://127.0.0.1:5173"],  # Permettre toutes les origines, à restreindre en production
     allow_credentials=True,
     allow_methods=["*"],  # Permettre toutes les méthodes HTTP
     allow_headers=["*"],  # Permettre tous les headers
