@@ -12,22 +12,9 @@ export type SensorData = {
 
 export type filterType = 'allShocks' | 'userShocks' | 'userRoutes';
 
-export type apiRoute = 'importSensorData' | 'user/me' | filterType;
+export type apiRoute = 'GPSPoints';
 
 export const api = import.meta.env.VITE_API_URL ?? '/api';
-
-// const getTokenFromLocal = () => {
-//   const token: Token = {
-//     access_token: localStorage.getItem('accessToken') as string,
-//     token_type: localStorage.getItem('tokenType') as string,
-//     email: localStorage.getItem('userEmail') as string,
-//     user_id: localStorage.getItem('userId') as string,
-//   };
-//   if (!token) {
-//     throw new Error('Token not found');
-//   }
-//   return token;
-// };
 
 export const getDataFromApi = async (route: apiRoute) => {
   const response = await fetch(`${api}/${route}`);
@@ -38,23 +25,6 @@ export const getDataFromApi = async (route: apiRoute) => {
 
   return response.json();
 };
-
-// export const sendSensorDataToApi = async (data: SensorData) => {
-//   const token = getTokenFromLocal();
-//   const response = await fetch(`${api}/importSensorData`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       Authorization: `Bearer ${token.access_token}`,
-//     },
-//     body: JSON.stringify({ raw_json: data.raw_json, filename: data.filename }),
-//   });
-
-//   if (!response.ok) {
-//     throw new Error('Failed to upload file');
-//   }
-//   return response.json();
-// };
 
 export const sendSensorDataToApi = async (data: SensorData) => {
   const response = await fetch(`${api}/importSensorData`, {

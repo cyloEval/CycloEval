@@ -1,40 +1,36 @@
 from sqlalchemy.orm import Session
-from server.models import File
-from server.schemas import FileCreate, FileResponse, FileResponseShort
+from server.models import File, GPSPoint
+from server.models import FileCreate, FileResponseShort, FileResponse, GPSPointResponse
 
-def create_file(db: Session, FileCreate: FileCreate) -> FileResponseShort:
-    print("----------- arrive1")
-
-    db_file = File(name=FileCreate.filename, user_id=FileCreate.user_id)
-    print("----------- arrive2")
+def create_file(db: Session, file_create: FileCreate) -> FileResponseShort:
+    db_file = File(name=file_create.filename)
     db.add(db_file)
-    print("----------- arrive3")
     db.commit()
     db.refresh(db_file)
-    print("----------- arrive")
     return FileResponseShort(
         id=db_file.id,
         filename=db_file.name,
-        user_id=db_file.user_id,
+        upload_time=db_file.uploadAt
     )
 
 def get_file(db: Session, file_id: int) -> FileResponse:
     db_file = db.query(File).filter(File.id == file_id).first()
+    gps_points = [
+        GPSPointResponse(
+            id=point.id,
+            latitude=point.latitude,
+            longitude=point.longitude,
+            altitude=point.altitude,
+            horizontalAccuracy=point.horizontalAccuracy,
+            verticalAccuracy=point.verticalAccuracy,
+            speedAccuracy=point.speedAccuracy,
+            zAccel=point.zAccel,
+            timestamp=point.timestamp
+        ) for point in db_file.gps_points
+    ]
     return FileResponse(
         id=db_file.id,
         filename=db_file.name,
-        user_id=db_file.user_id,
         upload_time=db_file.uploadAt,
-        # content=db_file.content
+        gps_points=gps_points
     )
-
-def get_files_by_user(db: Session, user_id: int) -> list[FileResponse]:
-    files = db.query(File).filter(File.user_id == user_id).all()
-    return [FileResponse(
-        id=file.id,
-        filename=file.name,
-        user_id=file.user_id,
-        upload_time=file.uploadAt,
-        # content=file.content
-    ) for file in files]
-

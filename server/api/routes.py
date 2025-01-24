@@ -6,19 +6,12 @@ from datetime import timedelta, datetime
 from jose import JWTError, jwt
 import json
 from pydantic import BaseModel
+import traceback
 
-from server.schemas import *
+from server.compute import process_gps_points
+from server.crud import create_file, create_gps_point, get_all_gps_points
+from server.models import FileCreate, GPSPointCreate, GPSPointResponse, FileCreate, FileResponse
 from server.core.database import get_db
-from server.crud import (
-    create_coordinate, get_nearby_coordinate,
-    create_user, authenticate_user, get_user_by_email, get_user,
-    create_detected_shock, get_shocks_by_user_with_coord, shockData_to_DetectedShockCreate, get_all_shocks,
-    create_file, create_route, get_routes_by_user
-)
-from server.core.security import verify_password, create_access_token, oauth2_scheme
-from server.core.config import settings
-from server.services import get_sensor_data, extract_shocks_sensor_data
-
 
 # Configurer le logger
 logging.basicConfig(level=logging.INFO)
@@ -26,148 +19,35 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-
-@router.post("/auth/register", response_model=UserResponse)
-def register(user: UserCreate, db: Session = Depends(get_db)):
-    logger.info("Received registration request for email: %s", user.email)
-    try:
-        db_user = get_user_by_email(db, user.email)
-        if db_user:
-            logger.warning("Email already registered: %s", user.email)
-            raise HTTPException(status_code=400, detail="Email already registered")
-        new_user: UserResponse = create_user(db, user)
-        logger.info("User created successfully: %s", new_user.email)
-        return new_user
-    except Exception as e:
-        logger.error("Error during registration: %s", str(e))
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
-@router.post("/auth/login", response_model=Token)
-def login(user: UserSignIn, db: Session = Depends(get_db)):
-    logger.info(f"Login attempt for email: {user.email}")
-    authenticated_user = authenticate_user(db, user.email, user.password)
-    if not authenticated_user:
-        logger.warning(f"Failed login attempt for email: {user.email}")
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": authenticated_user.email}, expires_delta=access_token_expires
-    )
-    logger.info(f"User logged in successfully: {user.email}")
-    return Token(access_token=access_token, token_type="bearer", email=authenticated_user.email, user_id=authenticated_user.id)
-
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> UserResponse:
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-    user = get_user_by_email(db, email=email)
-    if user is None:
-        raise credentials_exception
-    return UserResponse(id=user.id, email=user.email)
-
 class SendedData(BaseModel):
     filename: str
     raw_json: str
 
-# @router.post("/importSensorData", response_model=List[DetectedShockResponse])
-# async def import_sensor_data(data:SendedData , db: Session = Depends(get_db), current_user: UserResponse = Depends(get_current_user)):
-#     filename, raw_json = data.filename, data.raw_json
-#     json_data = json.loads(raw_json)
-#     try:
-#         # Extract the sensor data from the raw json and calculate the detected shocks
-#         data:SensorData = get_sensor_data(json_data)
-#         detecteds_shocks:ShockData = extract_shocks_sensor_data(json_data)
-
-#         # Store the raw data in the File table
-#         created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=current_user.id))
-
-#         coordinates = data.locations
-#         coordinate_ids = []
-#         # Store the Coordinate
-#         for coord in coordinates:
-#             created_coord = create_coordinate(db, CoordinateCreate(latitude=coord.latitude, longitude=coord.longitude, altitude=coord.altitude))
-#             coordinate_ids.append(created_coord.id)
-
-#         # Store the Route
-
-#         created_route:RouteResponse = create_route(db, RouteCreate(user_id=current_user.id, coordinate_ids=coordinate_ids))
-
-#         # Store the DetectedShock
-#         detecteds_shocks_response = []
-#         for shock in detecteds_shocks:
-#             detected_shock_create = shockData_to_DetectedShockCreate(shock, current_user.id)
-#             db_shock:DetectedShockResponse = create_detected_shock(db, detected_shock_create)
-#             detecteds_shocks_response.append(db_shock)
-#         return detecteds_shocks_response
-
-#     except json.JSONDecodeError:
-#         raise HTTPException(status_code=400, detail="Invalid JSON file")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f'Internal Server Error: {str(e)}')
-@router.post("/importSensorData", response_model=List[DetectedShockResponse])
+@router.post("/importSensorData", response_model=List[GPSPointCreate])
 async def import_sensor_data(data: SendedData, db: Session = Depends(get_db)):
     filename, raw_json = data.filename, data.raw_json
     json_data = json.loads(raw_json)
     try:
-        # Extract the sensor data from the raw json and calculate the detected shocks
-        print("----------------------------------1")
-        data: SensorData = get_sensor_data(json_data)
-        print("----------------------------------1.5")
-        detecteds_shocks: ShockData = extract_shocks_sensor_data(json_data)
-        print("----------------------------------2")
-        print(filename)
 
-        # Store the raw data in the File table
-        created_file: FileResponseShort = create_file(db, FileCreate(filename=filename, user_id=1))
-        print("---------------data")
-        print(data)
-        coordinates = data.locations
-        coordinate_ids = []
+        # Process the raw data
+        gps_points = process_gps_points(json_data)
 
-        # Store the Coordinate
-        for coord in coordinates:
-            created_coord = create_coordinate(db, CoordinateCreate(latitude=coord.latitude, longitude=coord.longitude, altitude=coord.altitude))
-            coordinate_ids.append(created_coord.id)
-        print("----------------------------------3")
-        # Store the Route
-        created_route: RouteResponse = create_route(db, RouteCreate(user_id=1,coordinate_ids=coordinate_ids))
-        print("----------------------------------4")
-        # Store the DetectedShock
-        detecteds_shocks_response = []
-        for shock in detecteds_shocks:
-            detected_shock_create = shockData_to_DetectedShockCreate(shock,1)
-            db_shock: DetectedShockResponse = create_detected_shock(db, detected_shock_create)
-            detecteds_shocks_response.append(db_shock)
+        print('END PROCESSING')
 
-        return detecteds_shocks_response
+        # Store the GPS Points
+        file = create_file(db, FileCreate(filename=filename))
+        for point in gps_points:
+            create_gps_point(db, point, file.id)
+
+        return gps_points
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")
     except Exception as e:
+        stack_trace = traceback.format_exc()
+        print(stack_trace)
         raise HTTPException(status_code=500, detail=f'Internal Server Error: {str(e)}')
 
-
-# type filterType = 'allShocks' | 'userShocks' | 'userRoutes'
-
-
-
-@router.get("/userShocks", response_model=List[DetectedShockResponse])
-def get_shocks(db: Session = Depends(get_db)):
-    return get_shocks_by_user_with_coord(db, None)
-
-@router.get("/allShocks", response_model=List[DetectedShockResponse])
-def get_all_shocks_route(db: Session = Depends(get_db)):
-    return get_all_shocks(db)
-
-@router.get("/userRoutes", response_model=List[RouteResponseWithCoordinates])
-def get_routes(db: Session = Depends(get_db)):
-    return get_routes_by_user(db, 1)
+@router.get("/GPSPoints", response_model=List[GPSPointResponse])
+async def get_gps_points(db: Session = Depends(get_db)):
+    return get_all_gps_points(db)
