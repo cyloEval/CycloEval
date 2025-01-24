@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Circle,
-  Polyline,
-  useMapEvents,
-} from 'react-leaflet';
+import React, { useState, useRef } from 'react';
+import { MapContainer, TileLayer, Circle, useMapEvents } from 'react-leaflet';
 
 type GPSPointsType = {
   id: number;
@@ -23,12 +17,37 @@ export type MapComponentProps = {
   GPSPoints: GPSPointsType[];
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
-  const mapRef = React.useRef<L.Map | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(12);
+const MapComponent = ({ GPSPoints }: MapComponentProps) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(13);
 
-  const putToScaleRadius = (zoomLevel: number) => {
-    return 100 / zoomLevel; // Adjust this value to scale the radius as needed
+  const getColor = (zAccel: number): string => {
+    const green = Math.max(0, 255 - Math.min(255, zAccel * 25));
+    const red = Math.min(255, zAccel * 25);
+    return `rgb(${red},${green},0)`;
+  };
+
+  const getOpacity = (horizontalAccuracy: number, factor: number): number => {
+    return Math.min(0.8, (10 / horizontalAccuracy) * factor);
+  };
+
+  const radiusFactor: { [key: number]: number } = {
+    10: 3,
+    9: 50,
+    8: 200,
+    7: 500,
+    6: 1500,
+    5: 30000,
+    4: 60000,
+    3: 100000,
+    2: 200000,
+    1: 300000,
+    0: 500000,
+  };
+
+  const getRadius = (horizontalAccuracy: number, zoomLevel: number): number => {
+    if (zoomLevel <= 10) return radiusFactor[zoomLevel];
+    else return horizontalAccuracy;
   };
 
   const MapEvents = () => {
@@ -41,6 +60,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
         }
       },
     });
+
     return null;
   };
 
@@ -63,13 +83,23 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
         />
 
         {GPSPoints.map((point) => (
-          <Circle
-            key={point.id}
-            center={[point.latitude, point.longitude]}
-            radius={point.horizontalAccuracy}
-            pathOptions={{ color: 'red' }}
-            fillOpacity={0.5}
-          />
+          <React.Fragment key={point.id}>
+            {[0.8].map((factor, index) => (
+              <Circle
+                key={index}
+                center={[point.latitude, point.longitude]}
+                radius={
+                  getRadius(point.horizontalAccuracy, zoomLevel) *
+                  (0.5 + index * 0.5)
+                }
+                pathOptions={{
+                  color: getColor(point.zAccel),
+                  stroke: false,
+                }}
+                fillOpacity={getOpacity(point.horizontalAccuracy, factor)}
+              />
+            ))}
+          </React.Fragment>
         ))}
       </MapContainer>
     </div>
