@@ -9,7 +9,8 @@ def create_file(db: Session, file_create: FileCreate) -> FileResponseShort:
     db.refresh(db_file)
     return FileResponseShort(
         id=db_file.id,
-        filename=db_file.name
+        filename=db_file.name,
+        upload_time=db_file.uploadAt
     )
 
 def get_file(db: Session, file_id: int) -> FileResponse:
