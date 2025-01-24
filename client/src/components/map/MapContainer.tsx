@@ -8,7 +8,7 @@ const MapContainer: React.FC = () => {
   const [GPSPoints, setGPSPoints] = useState<MapComponentProps['GPSPoints']>(
     [],
   );
-  // const [filters, setFilters] = useState<filterType[]>(['allShocks']);
+  const [filters, setFilters] = useState<filterType[]>(['allShocks']);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,20 +23,18 @@ const MapContainer: React.FC = () => {
     fetchData();
   }, []);
 
-  // const handleFilterChange = (filters: filterType[]) => {
-  //   setFilters(filters);
-  // };
+  const handleFilterChange = (filters: filterType[]) => {
+    setFilters(filters);
+  };
 
   return (
     <div className="flex w-full justify-center align-middle">
       <MapComponent GPSPoints={GPSPoints} />
-      {/* <div className="w-21">
-         <MapFilter
-          onFilterChange={(filters: string[]) =>
-            handleFilterChange(filters as filterType[])
-          }
-        />
-      </div> */}
+      <MapFilter
+        onFilterChange={(filters: string[]) =>
+          handleFilterChange(filters as filterType[])
+        }
+      />
     </div>
   );
 };

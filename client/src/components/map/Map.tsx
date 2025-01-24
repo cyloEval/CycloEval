@@ -17,6 +17,8 @@ export type MapComponentProps = {
   GPSPoints: GPSPointsType[];
 };
 
+
+
 const MapComponent = ({ GPSPoints }: MapComponentProps) => {
   const mapRef = useRef<L.Map | null>(null);
   const [zoomLevel, setZoomLevel] = useState(13);
@@ -65,7 +67,7 @@ const MapComponent = ({ GPSPoints }: MapComponentProps) => {
   };
 
   return (
-    <div className="flex h-[100vh] w-full justify-center text-center align-middle">
+    <div className="flex h-[92vh] w-full justify-center text-center align-middle">
       <MapContainer
         ref={mapRef}
         className="map"

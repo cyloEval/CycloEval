@@ -26,29 +26,27 @@ const MapFilter: React.FC<MapFilterProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-2">
-      <div className="w-full max-w-xs space-y-4 rounded-lg bg-slate-200/40 p-4 shadow-lg">
-        <h2 className="text-black-100 text-center text-2xl">Filters</h2>
+    <div className="absolute bottom-20 left-20 z-30 -translate-x-1/2 transform rounded-lg bg-white p-2 shadow-lg">
+      <h2 className="text-black-100 mb-4 text-center text-xl">Filters</h2>
+      <div className="space-y-2">
         <CheckBox
           label="All Shocks"
           isSelected={selectedFilters.includes('allShocks')}
           onCheckboxChange={handleFilterChange}
           value="allShocks"
         />
-        <>
-          <CheckBox
-            label="User Shocks"
-            isSelected={selectedFilters.includes('userShocks')}
-            onCheckboxChange={handleFilterChange}
-            value="userShocks"
-          />
-          <CheckBox
-            label="User Routes"
-            isSelected={selectedFilters.includes('userRoutes')}
-            onCheckboxChange={handleFilterChange}
-            value="userRoutes"
-          />
-        </>
+        <CheckBox
+          label="User Shocks"
+          isSelected={selectedFilters.includes('userShocks')}
+          onCheckboxChange={handleFilterChange}
+          value="userShocks"
+        />
+        <CheckBox
+          label="User Routes"
+          isSelected={selectedFilters.includes('userRoutes')}
+          onCheckboxChange={handleFilterChange}
+          value="userRoutes"
+        />
       </div>
     </div>
   );
