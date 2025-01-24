@@ -32,8 +32,6 @@ async def import_sensor_data(data: SendedData, db: Session = Depends(get_db)):
         # Process the raw data
         gps_points = process_gps_points(json_data)
 
-        print('END PROCESSING')
-
         # Store the GPS Points
         file = create_file(db, FileCreate(filename=filename))
         for point in gps_points:
