@@ -26,17 +26,22 @@ export const getDataFromApi = async (route: apiRoute) => {
   return response.json();
 };
 
+import pako from 'pako';
+
 export const sendSensorDataToApi = async (data: SensorData) => {
+  const compressed = pako.gzip(JSON.stringify(data));
   const response = await fetch(`${api}/importSensorData`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Content-Encoding': 'gzip',
     },
-    body: JSON.stringify({ raw_json: data.raw_json, filename: data.filename }),
+    body: compressed,
   });
 
   if (!response.ok) {
     throw new Error('Failed to upload file');
   }
+
   return response.json();
 };

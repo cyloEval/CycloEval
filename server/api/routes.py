@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import timedelta, datetime
@@ -23,16 +23,23 @@ class SendedData(BaseModel):
     filename: str
     raw_json: str
 
+import gzip
+import io
+
 @router.post("/importSensorData", response_model=List[GPSPointCreate])
-async def import_sensor_data(data: SendedData, db: Session = Depends(get_db)):
-    filename, raw_json = data.filename, data.raw_json
-    json_data = json.loads(raw_json)
+async def import_sensor_data(request: Request, db: Session = Depends(get_db)):
     try:
+        # Décoder le gzip
+        raw_data = await request.body()
+        decompressed_data = gzip.decompress(raw_data).decode('utf-8')
 
-        # Process the raw data
-        gps_points = process_gps_points(json_data)
+        # Charger les données JSON
+        data = json.loads(decompressed_data)
+        filename = data.get("filename")
+        raw_json = data.get("raw_json")
 
-        # Store the GPS Points
+        # Processus normal
+        gps_points = process_gps_points(json.loads(raw_json))
         file = create_file(db, FileCreate(filename=filename))
         for point in gps_points:
             create_gps_point(db, point, file.id)
@@ -42,8 +49,7 @@ async def import_sensor_data(data: SendedData, db: Session = Depends(get_db)):
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")
     except Exception as e:
-        stack_trace = traceback.format_exc()
-        print(stack_trace)
+        logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f'Internal Server Error: {str(e)}')
 
 @router.get("/GPSPoints", response_model=List[GPSPointResponse])
