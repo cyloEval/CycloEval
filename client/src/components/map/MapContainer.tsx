@@ -9,6 +9,16 @@ const MapContainer: React.FC = () => {
     [],
   );
   const [filters, setFilters] = useState<filterType[]>(['allShocks']);
+  const [coef, setCoef] = useState<number>(5);
+  const [baseMap, setBaseMap] = useState<string>('default');
+  const [zAccel, setZAccel] = useState<number>(1);
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({
+    startDate: '',
+    endDate: '',
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,13 +36,40 @@ const MapContainer: React.FC = () => {
     setFilters(filters);
   };
 
+  const handleCoefChange = (coef: number) => {
+    setCoef(coef);
+  };
+
+  const handleBaseMapChange = (baseMap: string) => {
+    setBaseMap(baseMap);
+  };
+
+  const handleZAccelChange = (zAccel: number) => {
+    setZAccel(zAccel);
+  };
+
+  const handleDateRangeChange = (startDate: string, endDate: string) => {
+    setDateRange({ startDate, endDate });
+  };
+
   return (
     <div className="flex w-full justify-center align-middle">
-      <MapComponent GPSPoints={GPSPoints} />
+      <MapComponent
+        GPSPoints={GPSPoints}
+        filters={filters}
+        coef={coef}
+        baseMap={baseMap}
+        zAccel={zAccel}
+        dateRange={dateRange}
+      />
       <MapFilter
         onFilterChange={(filters: string[]) =>
           handleFilterChange(filters as filterType[])
         }
+        onCoefChange={handleCoefChange}
+        onBaseMapChange={handleBaseMapChange}
+        onZAccelChange={handleZAccelChange}
+        onDateRangeChange={handleDateRangeChange}
       />
     </div>
   );

@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/header/Header';
 import FileUploadMenu from './components/upload/FileUploadMenu';
 import Contact from './components/header/Contact';
@@ -26,7 +22,7 @@ function App() {
   };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat">
+    <div className="fixed h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat">
       <Header onUploadClick={toggleUpload} />
       {showUpload && (
         <div className="fixed inset-0 z-40 bg-black bg-opacity-50">

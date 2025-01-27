@@ -3,7 +3,6 @@ import {
   MapContainer,
   TileLayer,
   Circle,
-  Polyline,
   useMapEvents,
   Marker,
   Popup,
@@ -26,6 +25,11 @@ type GPSPointsType = {
 
 export type MapComponentProps = {
   GPSPoints: GPSPointsType[];
+  filters: string[];
+  coef: number;
+  baseMap: string;
+  zAccel: number;
+  dateRange: { startDate: string; endDate: string };
 };
 
 const LocationControl = () => {
@@ -96,12 +100,18 @@ const LocationControl = () => {
   );
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
+const MapComponent: React.FC<MapComponentProps> = ({
+  GPSPoints,
+  filters,
+  coef,
+  baseMap,
+  zAccel,
+  dateRange,
+}) => {
   const mapRef = React.useRef<L.Map | null>(null);
-
   const [zoomLevel, setZoomLevel] = useState(12);
 
-  const getColor = (zAccel: number, coef = 5): string => {
+  const getColor = (zAccel: number, coef: number): string => {
     const green = Math.max(0, 255 - Math.min(255, zAccel * coef));
     const red = Math.min(255, zAccel * coef);
     return `rgb(${red},${green},0)`;
@@ -143,6 +153,24 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
     return null;
   };
 
+  const filteredPoints = GPSPoints.filter((point) => {
+    if (filters.includes('zAccel') && point.zAccel < zAccel) return false;
+    if (
+      filters.includes('date') &&
+      (new Date(point.timestamp) < new Date(dateRange.startDate) ||
+        new Date(point.timestamp) > new Date(dateRange.endDate))
+    )
+      return false;
+    return true;
+  });
+
+  const baseMapUrl =
+    baseMap === 'satellite'
+      ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+      : baseMap === 'terrain'
+        ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+        : 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+
   return (
     <div className="flex h-[92vh] w-full justify-center text-center align-middle">
       <MapContainer
@@ -158,11 +186,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
         <MapEvents />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+          url={baseMapUrl}
         />
         <LocationControl />
 
-        {GPSPoints.map((point) => (
+        {filteredPoints.map((point) => (
           <React.Fragment key={point.id}>
             {[0.85, 0.4].map((factor, index) => (
               <Circle
@@ -173,7 +201,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
                   (0.2 + index * 0.5)
                 }
                 pathOptions={{
-                  color: getColor(point.zAccel),
+                  color: getColor(point.zAccel, coef),
                   stroke: false,
                 }}
                 fillOpacity={getOpacity(point.horizontalAccuracy, factor)}
