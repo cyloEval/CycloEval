@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MapComponent, { MapComponentProps } from './Map';
 import MapFilter from './MapFilter';
-
-import { getDataFromApi, apiRoute } from '../../lib/api';
+import { getDataFromApi } from '../../lib/api';
 
 const MapContainer: React.FC = () => {
   const [GPSPoints, setGPSPoints] = useState<MapComponentProps['GPSPoints']>(
@@ -11,6 +10,7 @@ const MapContainer: React.FC = () => {
   const [coef, setCoef] = useState<number>(5);
   const [baseMap, setBaseMap] = useState<string>('default');
   const [zAccel, setZAccel] = useState<number>(1);
+  const [accuracy, setAccuracy] = useState<number>(1);
   const [dateRange, setDateRange] = useState<{
     startDate: string;
     endDate: string;
@@ -44,6 +44,10 @@ const MapContainer: React.FC = () => {
     setZAccel(zAccel);
   };
 
+  const handleAccuracyChange = (accuracy: number) => {
+    setAccuracy(accuracy);
+  };
+
   const handleDateRangeChange = (startDate: string, endDate: string) => {
     setDateRange({ startDate, endDate });
   };
@@ -59,6 +63,7 @@ const MapContainer: React.FC = () => {
         coef={coef}
         baseMap={baseMap}
         zAccel={zAccel}
+        accuracy={accuracy}
         dateRange={dateRange}
       />
       <div
@@ -70,6 +75,7 @@ const MapContainer: React.FC = () => {
           onCoefChange={handleCoefChange}
           onBaseMapChange={handleBaseMapChange}
           onZAccelChange={handleZAccelChange}
+          onAccuracyChange={handleAccuracyChange}
           onDateRangeChange={handleDateRangeChange}
         />
         <button
