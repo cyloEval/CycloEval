@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import FileInput from './FileInput';
 import UploadButton from './UploadButton';
 import ActionButtons from './ActionButtons';
@@ -19,16 +19,15 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
   );
   const [rawData, setRawData] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0); // Ajoutez cet état
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    // check if file is json
     if (file?.type !== 'application/json') {
       alert('Le fichier doit être de type JSON.');
       return;
     }
 
-    // extract json
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result;
@@ -44,28 +43,45 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
     }
   };
 
-  // send to api on upload
   const handleFileUpload = async () => {
     setLoading(true);
     if (rawData) {
       const data: SensorData = { raw_json: rawData, filename: fileName };
       try {
-        console.log(data);
-        const res = await sendSensorDataToApi(data);
-        console.log(res);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:8000/importSensorData', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            setProgress(percentComplete);
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            alert(`Fichier ${fileName} uploader avec succès`);
+          } else {
+            alert('Failed to upload file');
+          }
+          setLoading(false);
+          setRawData(null);
+          setFileName('Choisissez un fichier json');
+          setProgress(0);
+        };
+        xhr.onerror = () => {
+          alert('Failed to upload file');
+          setLoading(false);
+        };
+        xhr.send(JSON.stringify(data));
       } catch (error) {
         alert('Failed to upload file');
         console.error(error);
-        return;
+        setLoading(false);
       }
     } else {
       alert('Aucun fichier à télécharger');
-      return;
+      setLoading(false);
     }
-    setLoading(false);
-    setRawData(null);
-    alert(`Fichier ${fileName} uploader avec succès`);
-    setFileName('Choisissez un fichier json');
   };
 
   return (
@@ -73,6 +89,7 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
       {loading ? (
         <div className="flex justify-center">
           <Loader />
+          <div className="mt-2 text-center">{`Progression: ${progress.toFixed(2)}%`}</div>
         </div>
       ) : (
         <div className="mb-5 flex justify-center gap-5">

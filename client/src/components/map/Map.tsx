@@ -7,7 +7,7 @@ import {
   useMapEvents,
   Marker,
   Popup,
-  useMap
+  useMap,
 } from 'react-leaflet';
 
 import { LatLng } from 'leaflet';
@@ -43,25 +43,28 @@ const LocationControl = () => {
     alert('Impossible de trouver votre position');
   }, []);
 
-  const locateUser = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsLocating(true);
+  const locateUser = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsLocating(true);
 
-    if (!map) return;
+      if (!map) return;
 
-    map.off('locationfound');
-    map.off('locationerror');
+      map.off('locationfound');
+      map.off('locationerror');
 
-    map.on('locationfound', handleLocationFound);
-    map.on('locationerror', handleLocationError);
+      map.on('locationfound', handleLocationFound);
+      map.on('locationerror', handleLocationError);
 
-    map.locate({
-      setView: true,
-      maxZoom: 16,
-      enableHighAccuracy: true
-    });
-  }, [map, handleLocationFound, handleLocationError]);
+      map.locate({
+        setView: true,
+        maxZoom: 16,
+        enableHighAccuracy: true,
+      });
+    },
+    [map, handleLocationFound, handleLocationError],
+  );
 
   return (
     <div className="leaflet-top leaflet-right">
@@ -71,9 +74,15 @@ const LocationControl = () => {
           className="flex h-10 w-10 items-center justify-center bg-white hover:bg-gray-100"
           title="Me localiser"
           disabled={isLocating}
-          style={{ cursor: 'pointer', border: '2px solid rgba(0,0,0,0.2)', borderRadius: '4px' }}
+          style={{
+            cursor: 'pointer',
+            border: '2px solid rgba(0,0,0,0.2)',
+            borderRadius: '4px',
+          }}
         >
-          <span className={`text-xl ${isLocating ? 'animate-pulse text-purple-500' : 'text-gray-600'}`}>
+          <span
+            className={`text-xl ${isLocating ? 'animate-pulse text-purple-500' : 'text-gray-600'}`}
+          >
             📍
           </span>
         </button>
@@ -92,9 +101,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
 
   const [zoomLevel, setZoomLevel] = useState(12);
 
-  const getColor = (zAccel: number): string => {
-    const green = Math.max(0, 255 - Math.min(255, zAccel * 25));
-    const red = Math.min(255, zAccel * 25);
+  const getColor = (zAccel: number, coef = 5): string => {
+    const green = Math.max(0, 255 - Math.min(255, zAccel * coef));
+    const red = Math.min(255, zAccel * coef);
     return `rgb(${red},${green},0)`;
   };
 
@@ -149,19 +158,19 @@ const MapComponent: React.FC<MapComponentProps> = ({ GPSPoints }) => {
         <MapEvents />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
         />
         <LocationControl />
 
         {GPSPoints.map((point) => (
           <React.Fragment key={point.id}>
-            {[0.9, 0.6, 0.2].map((factor, index) => (
+            {[0.85, 0.4].map((factor, index) => (
               <Circle
                 key={index}
                 center={[point.latitude, point.longitude]}
                 radius={
                   getRadius(point.horizontalAccuracy, zoomLevel) *
-                  (0.5 + index * 0.5)
+                  (0.2 + index * 0.5)
                 }
                 pathOptions={{
                   color: getColor(point.zAccel),

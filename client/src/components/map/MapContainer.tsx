@@ -19,7 +19,6 @@ const MapContainer: React.FC = () => {
         console.error(error);
       }
     };
-
     fetchData();
   }, []);
 
