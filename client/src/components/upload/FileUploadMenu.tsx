@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FileInput from './FileInput';
 import UploadButton from './UploadButton';
 import ActionButtons from './ActionButtons';
-import { sendSensorDataToApi, SensorData } from '../../lib/api';
+import { api, sendSensorDataToApi, SensorData } from '../../lib/api';
 import Loader from './Loader';
 
 type FileUploadMenuProps = {
@@ -49,7 +49,7 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
       const data: SensorData = { raw_json: rawData, filename: fileName };
       try {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:8000/importSensorData', true);
+        xhr.open('POST', `${api}/importSensorData`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
