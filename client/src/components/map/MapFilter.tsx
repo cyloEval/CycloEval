@@ -153,7 +153,7 @@ const MapFilter: React.FC<MapFilterProps> = ({
               htmlFor="zaccel-slider"
               className="block text-sm font-medium text-gray-300"
             >
-              Z Accel: <span className="font-bold">{zAccel}</span>
+              Z Accel {'>'} <span className="font-bold">{zAccel}</span>
             </label>
             <input
               id="zaccel-slider"
