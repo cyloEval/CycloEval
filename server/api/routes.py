@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import timedelta, datetime
@@ -7,6 +7,8 @@ from jose import JWTError, jwt
 import json
 from pydantic import BaseModel
 import traceback
+import os
+import base64
 
 from server.compute import process_gps_points
 from server.crud import create_file, create_gps_point, get_all_gps_points
@@ -23,25 +25,69 @@ class SendedData(BaseModel):
     filename: str
     raw_json: str
 
-@router.post("/importSensorData", response_model=List[GPSPointCreate])
-async def import_sensor_data(data:SendedData, db: Session = Depends(get_db)):
+class ChunkData(BaseModel):
+    chunk: str
+    chunk_number: int
+    total_chunks: int
+    filename: str
+
+UPLOAD_DIR = os.path.join(os.getcwd(), "server/upload")
+
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+
+
+
+from fastapi import UploadFile, File, Form
+
+@router.post("/upload-chunk/")
+async def upload_chunk(
+    chunk: UploadFile = File(...),  # Recevoir le fichier binaire
+    chunk_number: int = Form(...),  # Autres données comme formulaire
+    total_chunks: int = Form(...),
+    filename: str = Form(...),
+    db: Session = Depends(get_db)
+):
     try:
-        filename, raw_json = data.filename, data.raw_json
-        json_data = json.loads(raw_json)
+        # Ensure filename is provided
+        if not filename:
+            raise HTTPException(status_code=400, detail="Filename must be provided")
 
-        # Processus normal
-        gps_points = process_gps_points(json_data)
-        file = create_file(db, FileCreate(filename=filename))
-        for point in gps_points:
-            create_gps_point(db, point, file.id)
+        # Créer le chemin complet
+        file_path = os.path.join(UPLOAD_DIR, filename)
 
-        return gps_points
+        # Lire le contenu du fichier chunk
+        with open(file_path, "ab") as f:
+            content = await chunk.read()
+            f.write(content)
 
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON file")
+        # Vérifier si tous les chunks sont uploadés
+        if chunk_number == total_chunks - 1:
+            logger.info(f"Processing file {filename}")
+
+            # Lire le fichier complet pour le traiter
+            with open(file_path, "r") as f:
+                raw_json = f.read()
+
+            json_data = json.loads(raw_json)
+            os.remove(file_path)  # Supprimer le fichier après traitement
+
+            logger.info(f"Computing file {filename}")
+            gps_points = process_gps_points(json_data)
+            file_record = create_file(db, FileCreate(filename=filename))
+
+            for i, point in enumerate(gps_points):
+                create_gps_point(db, point, file_record.id)
+
+            return gps_points
+
+        return {"message": f"Chunk {chunk_number} uploaded successfully"}
     except Exception as e:
-        logger.error(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f'Internal Server Error: {str(e)}')
+        logger.error(f"Error uploading chunk: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
+
 
 @router.get("/GPSPoints", response_model=List[GPSPointResponse])
 async def get_gps_points(db: Session = Depends(get_db)):

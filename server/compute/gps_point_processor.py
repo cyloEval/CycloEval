@@ -1,5 +1,8 @@
 from datetime import datetime
 from server.models import GPSPointCreate, Location
+import logging
+
+logger = logging.getLogger(__name__)
 
 class GPSPointProcessor:
     def __init__(self, times: list[str], z_global: list[float], locations: list[Location]):
@@ -17,24 +20,30 @@ class GPSPointProcessor:
             return []
         gps_points = []
         old_time = self.locations[0].time if len(self.locations) > 0 else None
+        size = len(self.locations)
         for i in range(1, len(self.locations)):
+            if i % (size//10) == 0:
+                logger.info(f"Processing GPS point {i} of {size}")
             # Find max acceleration in time range
             time = self.locations[i].time
-            max_accel = self.__find_max_acceleration_within_time_range(old_time, time)
+            # filter out points with speed less than 3 m/s
+            if float(self.locations[i].speed) > 3:
+                max_accel = self.__find_max_acceleration_within_time_range(old_time, time)
+                # Create GPS point
+                gps_point = GPSPointCreate(
+                    latitude=self.locations[i].latitude,
+                    longitude=self.locations[i].longitude,
+                    altitude=self.locations[i].altitude,
+                    horizontalAccuracy=self.locations[i].horizontalAccuracy,
+                    verticalAccuracy=self.locations[i].verticalAccuracy,
+                    speedAccuracy=self.locations[i].speedAccuracy,
+                    zAccel=max_accel,
+                    timestamp=self.locations[i].time
+                )
+                gps_points.append(gps_point)
+
             old_time = time
 
-            # Create GPS point
-            gps_point = GPSPointCreate(
-                latitude=self.locations[i].latitude,
-                longitude=self.locations[i].longitude,
-                altitude=self.locations[i].altitude,
-                horizontalAccuracy=self.locations[i].horizontalAccuracy,
-                verticalAccuracy=self.locations[i].verticalAccuracy,
-                speedAccuracy=self.locations[i].speedAccuracy,
-                zAccel=max_accel,
-                timestamp=self.locations[i].time
-            )
-            gps_points.append(gps_point)
 
         return gps_points
 

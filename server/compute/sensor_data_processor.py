@@ -3,6 +3,9 @@ from scipy.spatial.transform import Rotation
 from server.models import SensorData, Accelerometer, Orientation, Metadata, Location
 from pydantic import BaseModel
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 class SensorDataProcessor:
 
@@ -11,7 +14,6 @@ class SensorDataProcessor:
     def process_Z_global_acceleration(acceleration_data:list[Accelerometer], orientation_data:list[Orientation]) -> tuple[list[str], list[float]]:
         merged_data = SensorDataProcessor.__join_acceleration_orientation_on_time(acceleration_data, orientation_data)
         global_acceleration = SensorDataProcessor.__compute_global_acceleration(merged_data)
-        print(global_acceleration[:10])
         times = [row['time'] for row in global_acceleration]
         global_z_accels = [row['global_z_accel'] for row in global_acceleration]
         return times, global_z_accels
@@ -63,10 +65,14 @@ class SensorDataProcessor:
     @staticmethod
     def __join_acceleration_orientation_on_time(accel_data: list[Accelerometer], orientation_data: list[Orientation]) -> list[dict]:
         merged_data = []
-        for accel_row in accel_data:
+        size = len(accel_data)
+        for i, accel_row in enumerate(accel_data):
+        # show progress every 10% of the way
+            if i % (size // 10) == 0:
+                logger.info(f"{i} of {size} rows processed")
             accel_time = accel_row.time
-            orientation_row = next((o for o in orientation_data if o.time == accel_time), None)
-            if orientation_row:
+            orientation_row = orientation_data[i]
+            if orientation_row.time == accel_time:
                 merged_data.append({**accel_row.__dict__ , **orientation_row.__dict__})
         return merged_data
 
