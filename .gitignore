@@ -7,7 +7,6 @@ nginx/*
 # dist folders
 client/dist/
 server/dist/
-server/main.py
 webhook_listener.py
 webhook_listener.Dockerfile
 requirements.txt
