@@ -3,13 +3,14 @@ import {
   MapContainer,
   TileLayer,
   Circle,
+  Tooltip,
   useMapEvents,
   Marker,
   Popup,
   useMap,
 } from 'react-leaflet';
 
-import { LatLng } from 'leaflet';
+import { latLng, LatLng } from 'leaflet';
 
 type GPSPointsType = {
   id: number;
@@ -25,7 +26,6 @@ type GPSPointsType = {
 
 export type MapComponentProps = {
   GPSPoints: GPSPointsType[];
-  filters: string[];
   coef: number;
   baseMap: string;
   zAccel: number;
@@ -102,7 +102,6 @@ const LocationControl = () => {
 
 const MapComponent: React.FC<MapComponentProps> = ({
   GPSPoints,
-  filters,
   coef,
   baseMap,
   zAccel,
@@ -154,22 +153,23 @@ const MapComponent: React.FC<MapComponentProps> = ({
   };
 
   const filteredPoints = GPSPoints.filter((point) => {
-    if (filters.includes('zAccel') && point.zAccel < zAccel) return false;
+    if (point.zAccel < zAccel) return false;
     if (
-      filters.includes('date') &&
-      (new Date(point.timestamp) < new Date(dateRange.startDate) ||
-        new Date(point.timestamp) > new Date(dateRange.endDate))
+      new Date(point.timestamp) < new Date(dateRange.startDate) ||
+      new Date(point.timestamp) > new Date(dateRange.endDate)
     )
       return false;
     return true;
   });
 
-  const baseMapUrl =
-    baseMap === 'satellite'
-      ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
-      : baseMap === 'terrain'
-        ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
-        : 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+  const mapTile = {
+    default: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    dark: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+    white:
+      'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+  };
+
+  const baseMapUrl: string = mapTile[baseMap as keyof typeof mapTile];
 
   return (
     <div className="flex h-[92vh] w-full justify-center text-center align-middle">
@@ -205,7 +205,21 @@ const MapComponent: React.FC<MapComponentProps> = ({
                   stroke: false,
                 }}
                 fillOpacity={getOpacity(point.horizontalAccuracy, factor)}
-              />
+              >
+                <Tooltip>
+                  <span>
+                    Lat: {point.latitude} - Lon: {point.longitude}
+                  </span>
+                  <br />
+                  <span>
+                    Z Accel: {Math.trunc(point.zAccel * 100) / 100} m/s²
+                  </span>
+                  <br />
+                  <span>
+                    Date: {new Date(point.timestamp).toLocaleString()}
+                  </span>
+                </Tooltip>
+              </Circle>
             ))}
           </React.Fragment>
         ))}

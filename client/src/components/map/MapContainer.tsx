@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import MapComponent, { MapComponentProps } from './Map';
 import MapFilter from './MapFilter';
 
-import { filterType, getDataFromApi, apiRoute } from '../../lib/api';
+import { getDataFromApi, apiRoute } from '../../lib/api';
 
 const MapContainer: React.FC = () => {
   const [GPSPoints, setGPSPoints] = useState<MapComponentProps['GPSPoints']>(
     [],
   );
-  const [filters, setFilters] = useState<filterType[]>(['allShocks']);
   const [coef, setCoef] = useState<number>(5);
   const [baseMap, setBaseMap] = useState<string>('default');
   const [zAccel, setZAccel] = useState<number>(1);
@@ -19,6 +18,7 @@ const MapContainer: React.FC = () => {
     startDate: '',
     endDate: '',
   });
+  const [showFilters, setShowFilters] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,10 +31,6 @@ const MapContainer: React.FC = () => {
     };
     fetchData();
   }, []);
-
-  const handleFilterChange = (filters: filterType[]) => {
-    setFilters(filters);
-  };
 
   const handleCoefChange = (coef: number) => {
     setCoef(coef);
@@ -52,25 +48,45 @@ const MapContainer: React.FC = () => {
     setDateRange({ startDate, endDate });
   };
 
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
   return (
-    <div className="flex w-full justify-center align-middle">
+    <div className="relative flex w-full items-center justify-center">
       <MapComponent
         GPSPoints={GPSPoints}
-        filters={filters}
         coef={coef}
         baseMap={baseMap}
         zAccel={zAccel}
         dateRange={dateRange}
       />
-      <MapFilter
-        onFilterChange={(filters: string[]) =>
-          handleFilterChange(filters as filterType[])
-        }
-        onCoefChange={handleCoefChange}
-        onBaseMapChange={handleBaseMapChange}
-        onZAccelChange={handleZAccelChange}
-        onDateRangeChange={handleDateRangeChange}
-      />
+      <div
+        className={`absolute bottom-24 left-24 z-30 transform rounded-xl bg-white p-4 shadow-lg transition-all duration-300 ${
+          showFilters ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+        }`}
+      >
+        <MapFilter
+          onCoefChange={handleCoefChange}
+          onBaseMapChange={handleBaseMapChange}
+          onZAccelChange={handleZAccelChange}
+          onDateRangeChange={handleDateRangeChange}
+        />
+        <button
+          onClick={toggleFilters}
+          className="absolute -right-2 top-1/2 z-40 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-xl bg-blue-500 text-white hover:bg-blue-700 focus:outline-none"
+        >
+          ⇦
+        </button>
+      </div>
+      {!showFilters && (
+        <button
+          onClick={toggleFilters}
+          className="absolute bottom-20 left-8 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-lg text-white shadow-lg transition-transform duration-300 hover:bg-blue-700 focus:outline-none"
+        >
+          ⇨
+        </button>
+      )}
     </div>
   );
 };
