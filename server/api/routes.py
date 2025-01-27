@@ -23,23 +23,14 @@ class SendedData(BaseModel):
     filename: str
     raw_json: str
 
-import gzip
-import io
-
 @router.post("/importSensorData", response_model=List[GPSPointCreate])
-async def import_sensor_data(request: Request, db: Session = Depends(get_db)):
+async def import_sensor_data(data:SendedData, db: Session = Depends(get_db)):
     try:
-        # Décoder le gzip
-        raw_data = await request.body()
-        decompressed_data = gzip.decompress(raw_data).decode('utf-8')
-
-        # Charger les données JSON
-        data = json.loads(decompressed_data)
-        filename = data.get("filename")
-        raw_json = data.get("raw_json")
+        filename, raw_json = data.filename, data.raw_json
+        json_data = json.loads(raw_json)
 
         # Processus normal
-        gps_points = process_gps_points(json.loads(raw_json))
+        gps_points = process_gps_points(json_data)
         file = create_file(db, FileCreate(filename=filename))
         for point in gps_points:
             create_gps_point(db, point, file.id)
