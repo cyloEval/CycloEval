@@ -1,0 +1,22 @@
+# node modules
+node_modules/
+client/node_modules/
+server/node_modules/
+nginx/*
+
+# dist folders
+client/dist/
+server/dist/
+server/main.py
+webhook_listener.py
+webhook_listener.Dockerfile
+requirements.txt
+deploy.sh
+# lockfiles
+pnpm-lock.yaml
+
+.env
+server/coverage
+
+*.db
+python/All_e_des_Jacquets-2024-10-14_11-38-12.json

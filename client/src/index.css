@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.map {
+  height: 60vh;
+  width: 60vw;
+}
