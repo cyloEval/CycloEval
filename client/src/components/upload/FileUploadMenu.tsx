@@ -8,11 +8,13 @@ import { api } from '../../lib/api';
 type FileUploadMenuProps = {
   onCancel: () => void;
   onContinue: () => void;
+  onUploadSuccess: () => void; // New prop
 };
 
 const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
   onCancel,
   onContinue,
+  onUploadSuccess, // New prop
 }) => {
   const [fileName, setFileName] = useState<string>(
     'Choisissez un fichier JSON',
@@ -22,9 +24,6 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
   const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Handle file selection and validate type.
-   */
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) {
@@ -42,9 +41,6 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
     setError(null); // Clear previous errors
   };
 
-  /**
-   * Upload file in chunks.
-   */
   const uploadFileInChunks = async (file: File) => {
     const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
@@ -81,9 +77,6 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
     return true;
   };
 
-  /**
-   * Handle file upload process.
-   */
   const handleFileUpload = async () => {
     if (!file) {
       setError('Aucun fichier à télécharger.');
@@ -99,6 +92,7 @@ const FileUploadMenu: React.FC<FileUploadMenuProps> = ({
       setFile(null);
       setFileName('Choisissez un fichier JSON');
       setProgress(0);
+      onUploadSuccess(); // Notify parent component
     }
   };
 

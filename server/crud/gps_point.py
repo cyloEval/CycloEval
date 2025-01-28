@@ -63,3 +63,8 @@ def get_gps_points_by_file(db: Session, file_id: int) -> list[GPSPointResponse] 
             speedAccuracy=point.speedAccuracy
         ) for point in gps_points
     ]
+
+def delete_gps_points_by_file(db: Session, file_id: int) -> None:
+    db.query(GPSPoint).filter(GPSPoint.file_id == file_id).delete()
+    db.commit()
+    return None

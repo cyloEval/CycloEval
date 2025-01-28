@@ -3,7 +3,7 @@ import MapComponent, { MapComponentProps } from './Map';
 import MapFilter from './MapFilter';
 import { getDataFromApi } from '../../lib/api';
 
-const MapContainer: React.FC = () => {
+const MapContainer: React.FC<{ onRefresh: () => void }> = ({ onRefresh }) => {
   const [GPSPoints, setGPSPoints] = useState<MapComponentProps['GPSPoints']>(
     [],
   );
@@ -20,17 +20,22 @@ const MapContainer: React.FC = () => {
   });
   const [showFilters, setShowFilters] = useState<boolean>(true);
 
+  const fetchData = async () => {
+    try {
+      const data = await getDataFromApi('GPSPoints');
+      setGPSPoints(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getDataFromApi('GPSPoints');
-        setGPSPoints(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    onRefresh();
+  }, [GPSPoints, onRefresh]);
 
   const handleCoefChange = (coef: number) => {
     setCoef(coef);

@@ -34,3 +34,26 @@ def get_file(db: Session, file_id: int) -> FileResponse:
         upload_time=db_file.uploadAt,
         gps_points=gps_points
     )
+
+def get_all_files(db: Session) -> list[FileResponseShort]:
+    files = db.query(File).all()
+    return [
+        FileResponseShort(
+            id=file.id,
+            filename=file.name,
+            upload_time=file.uploadAt
+        ) for file in files
+    ]
+
+def delete_file_by_id(db: Session, file_id: int) -> bool:
+    db_file = db.query(File).filter(File.id == file_id).first()
+    if db_file is None:
+        return False
+    db.delete(db_file)
+    db.commit()
+    return True
+
+def reset_database(db: Session):
+    db.query(GPSPoint).delete()
+    db.query(File).delete()
+    db.commit()

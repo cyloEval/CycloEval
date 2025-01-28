@@ -5,9 +5,11 @@ import FileUploadMenu from './components/upload/FileUploadMenu';
 import Contact from './components/header/Contact';
 import Contribution from './components/contribution';
 import MapContainer from './components/map/MapContainer';
+import Admin from './components/Admin';
 
 function App() {
   const [showUpload, setShowUpload] = useState(false);
+  const [refreshMap, setRefreshMap] = useState(false);
 
   const handleCancelUpload = () => {
     setShowUpload(false);
@@ -17,8 +19,17 @@ function App() {
     setShowUpload(false);
   };
 
+  const handleUploadSuccess = () => {
+    setShowUpload(false);
+    setRefreshMap(true); // Trigger map refresh
+  };
+
   const toggleUpload = () => {
     setShowUpload(!showUpload);
+  };
+
+  const handleMapRefresh = () => {
+    setRefreshMap(false); // Reset the refresh state
   };
 
   return (
@@ -29,11 +40,15 @@ function App() {
           <FileUploadMenu
             onCancel={handleCancelUpload}
             onContinue={handleContinueUpload}
+            onUploadSuccess={handleUploadSuccess} // Pass the new prop
           />
         </div>
       )}
       <div className='h-full" w-full'>
-        <MapContainer />
+        <MapContainer
+          onRefresh={handleMapRefresh}
+          key={refreshMap ? 'refresh' : 'no-refresh'}
+        />
       </div>
     </div>
   );
@@ -46,6 +61,7 @@ export default function AppWithRouter() {
         <Route path="/" element={<App />} />
         <Route path="/contribution" element={<Contribution />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );

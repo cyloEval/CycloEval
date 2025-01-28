@@ -11,8 +11,8 @@ import os
 import base64
 
 from server.compute import process_gps_points
-from server.crud import create_file, create_gps_point, get_all_gps_points
-from server.models import FileCreate, GPSPointCreate, GPSPointResponse, FileCreate, FileResponse
+from server.crud import create_file, create_gps_point, get_all_gps_points, get_all_files, delete_gps_points_by_file, delete_file_by_id
+from server.models import FileCreate, GPSPointCreate, GPSPointResponse, FileCreate, FileResponseShort
 from server.core.database import get_db
 
 # Configurer le logger
@@ -92,3 +92,26 @@ async def upload_chunk(
 @router.get("/GPSPoints", response_model=List[GPSPointResponse])
 async def get_gps_points(db: Session = Depends(get_db)):
     return get_all_gps_points(db)
+
+
+@router.delete("/delete-file/{file_id}")
+async def delete_file(file_id: int, db: Session = Depends(get_db)):
+    try:
+        delete_gps_points_by_file(db, file_id)
+        delete_file_by_id(db, file_id)
+        logger.info(f"File and associated GPS points deleted successfully")
+        return {"message": "File and associated GPS points deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/file", response_model=List[FileResponseShort])
+def get_files(db: Session = Depends(get_db)):
+    return get_all_files(db)
+
+@router.post("/reset-database")
+async def reset_db(db: Session = Depends(get_db)):
+    try:
+        reset_database(db)
+        return {"message": "Database reset successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
