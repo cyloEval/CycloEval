@@ -31,7 +31,19 @@ const Admin: React.FC = () => {
       );
       setFiles(sortedFiles);
     } catch (error) {
-      setMessage(`Error: ${error}`);
+      if (error instanceof Error) {
+        if (error instanceof Error) {
+          if (error instanceof Error) {
+            setMessage(`Error: ${error.message}`);
+          } else {
+            setMessage('An unknown error occurred');
+          }
+        } else {
+          setMessage('An unknown error occurred');
+        }
+      } else {
+        setMessage('An unknown error occurred');
+      }
     }
   };
 
@@ -78,7 +90,7 @@ const Admin: React.FC = () => {
           />
           <button
             onClick={handleLogin}
-            className="w-full rounded bg-blue-500 p-2 text-white"
+            className="w-full rounded bg-blue-600 p-2 text-white transition-colors duration-300 hover:bg-blue-800"
           >
             Login
           </button>
@@ -90,7 +102,7 @@ const Admin: React.FC = () => {
           {message && <p className="mt-4 text-red-500">{message}</p>}
           <button
             onClick={() => navigate('/')}
-            className="mb-4 w-full rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+            className="mb-4 w-full rounded bg-blue-600 p-2 text-white transition-colors duration-300 hover:bg-blue-800"
           >
             Return to Map
           </button>
@@ -104,7 +116,7 @@ const Admin: React.FC = () => {
                 </span>
                 <button
                   onClick={() => handleDelete(file.id)}
-                  className="ml-4 rounded bg-red-500 p-1 text-white"
+                  className="ml-4 rounded bg-red-600 p-1 text-white transition-colors duration-300 hover:bg-red-800"
                 >
                   Delete
                 </button>
@@ -113,7 +125,7 @@ const Admin: React.FC = () => {
           </ul>
           <button
             onClick={handleResetDatabase}
-            className="mt-4 w-full rounded bg-red-500 p-2 text-white hover:bg-red-700"
+            className="mt-4 w-full rounded bg-red-600 p-2 text-white transition-colors duration-300 hover:bg-red-800"
           >
             Reset Database
           </button>

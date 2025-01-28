@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type ActionButtonsProps = {
   onCancel: () => void;
@@ -13,18 +13,18 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-between items-center p-2.5 mt-5">
+    <div className="mt-5 flex items-center justify-between p-2.5">
       <button
-        className="p-2.5 bg-[#8a4a7d] text-white rounded-lg cursor-pointer transition-colors duration-300 hover:bg-[#d6006e]"
+        className="cursor-pointer rounded-lg bg-blue-600 p-2.5 text-white transition-colors duration-300 hover:bg-blue-800"
         onClick={() => {
           onCancel();
-          navigate("/");
+          navigate('/');
         }}
       >
         Annuler l'import
       </button>
       <button
-        className="p-2.5 bg-[#8a4a7d] text-white rounded-lg cursor-pointer transition-colors duration-300 hover:bg-[#d6006e]"
+        className="cursor-pointer rounded-lg bg-blue-600 p-2.5 text-white transition-colors duration-300 hover:bg-blue-800"
         onClick={onContinue}
       >
         Continuer
