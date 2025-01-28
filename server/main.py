@@ -27,9 +27,11 @@ app.add_middleware(
 )
 
 # see if a dot env file exists 
-if os.path.exists(".env"):
+
+if load_dotenv():
+    for i in range(100):
+        print("FOUND THE DOT ENV")
     # Load environment variables from .env
-    load_dotenv()
 
     # # Retrieve environment variables
     GITHUB_SECRET = os.getenv("GITHUB_SECRET").encode()
