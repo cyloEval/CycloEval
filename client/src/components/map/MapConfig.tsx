@@ -28,31 +28,31 @@ const MapConfig: React.FC<MapConfigProps> = ({
   const [endDate, setEndDate] = useState<string>('');
 
   return (
-    <div className="rounded-lg bg-gray-900 p-4 shadow-lg">
-      <div>
+    <div className="rounded-lg bg-gray-900 shadow-lg space-y-4 p-4">
+      <div className="flex flex-col space-y-4">
         <h3 className="text-md font-semibold text-white">Settings</h3>
-        <CoefSlider
-          value={coef}
-          onChange={setCoef}
-          onCoefChange={onCoefChange}
-        />
         <BaseMapSelect
           value={baseMap}
           onChange={setBaseMap}
           onBaseMapChange={onBaseMapChange}
         />
-      </div>
-      <div className="mt-4">
-        <h3 className="text-md font-semibold text-white">Filters</h3>
-        <ZAccelSlider
-          value={zAccel}
-          onChange={setZAccel}
-          onZAccelChange={onZAccelChange}
+        <CoefSlider
+          value={coef}
+          onChange={setCoef}
+          onCoefChange={onCoefChange}
         />
         <AccuracySlider
           value={accuracy}
           onChange={setAccuracy}
           onAccuracyChange={onAccuracyChange}
+        />
+      </div>
+      <div className="flex flex-col space-y-4 mt-4">
+        <h3 className="text-md font-semibold text-white">Filters</h3>
+        <ZAccelSlider
+          value={zAccel}
+          onChange={setZAccel}
+          onZAccelChange={onZAccelChange}
         />
         <DateRangePicker
           startDate={startDate}
