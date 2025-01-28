@@ -21,24 +21,35 @@ type GPSPointsType = {
 };
 
 export type MapProps = {
-  GPSPoints: GPSPointsType[];
-  coef: number;
-  baseMap: string;
-  zAccel: number;
-  accuracy: number;
-  dateRange: { startDate: string; endDate: string };
+  refreshMap: boolean;
+  onRefresh: () => void;
 };
 
-const Map: React.FC = () => {
-  const [GPSPoints, setGPSPoints] = useState<MapProps['GPSPoints']>([]);
-  const [coef, setCoef] = useState<number>(5);
-  const [baseMap, setBaseMap] = useState<string>('default');
-  const [zAccel, setZAccel] = useState<number>(1);
-  const [accuracy, setAccuracy] = useState<number>(1);
+const Map: React.FC<MapProps> = ({ refreshMap, onRefresh }) => {
+  const [GPSPoints, setGPSPoints] = useState<GPSPointsType[]>([]);
+  const [coef, setCoef] = useState<number>(() => {
+    const saved = localStorage.getItem('coef');
+    return saved ? JSON.parse(saved) : 5;
+  });
+  const [baseMap, setBaseMap] = useState<string>(() => {
+    const saved = localStorage.getItem('baseMap');
+    return saved ? JSON.parse(saved) : 'default';
+  });
+  const [zAccel, setZAccel] = useState<number>(() => {
+    const saved = localStorage.getItem('zAccel');
+    return saved ? JSON.parse(saved) : 1;
+  });
+  const [accuracy, setAccuracy] = useState<number>(() => {
+    const saved = localStorage.getItem('accuracy');
+    return saved ? JSON.parse(saved) : 1;
+  });
   const [dateRange, setDateRange] = useState<{
     startDate: string;
     endDate: string;
-  }>({ startDate: '', endDate: '' });
+  }>(() => {
+    const saved = localStorage.getItem('dateRange');
+    return saved ? JSON.parse(saved) : { startDate: '', endDate: '' };
+  });
   const [showFilters, setShowFilters] = useState<boolean>(true);
   const mapRef = useRef<L.Map | null>(null);
   const [zoomLevel, setZoomLevel] = useState(12);
@@ -55,6 +66,33 @@ const Map: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (refreshMap) {
+      fetchData();
+      onRefresh();
+    }
+  }, [refreshMap, onRefresh]);
+
+  useEffect(() => {
+    localStorage.setItem('coef', JSON.stringify(coef));
+  }, [coef]);
+
+  useEffect(() => {
+    localStorage.setItem('baseMap', JSON.stringify(baseMap));
+  }, [baseMap]);
+
+  useEffect(() => {
+    localStorage.setItem('zAccel', JSON.stringify(zAccel));
+  }, [zAccel]);
+
+  useEffect(() => {
+    localStorage.setItem('accuracy', JSON.stringify(accuracy));
+  }, [accuracy]);
+
+  useEffect(() => {
+    localStorage.setItem('dateRange', JSON.stringify(dateRange));
+  }, [dateRange]);
 
   const handleCoefChange = (coef: number) => setCoef(coef);
   const handleBaseMapChange = (baseMap: string) => setBaseMap(baseMap);
@@ -84,7 +122,7 @@ const Map: React.FC = () => {
   const baseMapUrl: string = mapTile[baseMap as keyof typeof mapTile];
 
   return (
-    <div className="lg:h-[93vh relative flex w-full justify-center text-center align-middle sm:h-[85vh] md:h-[93vh]">
+    <div className="relative flex h-[93vh] w-full justify-center text-center align-middle sm:h-[93vh] md:h-[93vh] lg:h-[93vh] xl:h-[93vh] 2xl:h-[93vh]">
       <MapContainer
         ref={mapRef}
         className="map"

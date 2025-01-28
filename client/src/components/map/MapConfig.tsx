@@ -27,8 +27,27 @@ const MapConfig: React.FC<MapConfigProps> = ({
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
+  const resetToDefault = () => {
+    setCoef(5);
+    setBaseMap('default');
+    setZAccel(0);
+    setAccuracy(1);
+    setStartDate('');
+    setEndDate('');
+    onCoefChange(5);
+    onBaseMapChange('default');
+    onZAccelChange(0);
+    onAccuracyChange(1);
+    onDateRangeChange('', '');
+    localStorage.removeItem('coef');
+    localStorage.removeItem('baseMap');
+    localStorage.removeItem('zAccel');
+    localStorage.removeItem('accuracy');
+    localStorage.removeItem('dateRange');
+  };
+
   return (
-    <div className="rounded-lg bg-gray-900 shadow-lg space-y-4 p-4">
+    <div className="space-y-4 rounded-lg bg-gray-900 p-4 shadow-lg">
       <div className="flex flex-col space-y-4">
         <h3 className="text-md font-semibold text-white">Settings</h3>
         <BaseMapSelect
@@ -47,7 +66,7 @@ const MapConfig: React.FC<MapConfigProps> = ({
           onAccuracyChange={onAccuracyChange}
         />
       </div>
-      <div className="flex flex-col space-y-4 mt-4">
+      <div className="mt-4 flex flex-col space-y-4">
         <h3 className="text-md font-semibold text-white">Filters</h3>
         <ZAccelSlider
           value={zAccel}
@@ -61,6 +80,14 @@ const MapConfig: React.FC<MapConfigProps> = ({
           onEndDateChange={setEndDate}
           onDateRangeChange={onDateRangeChange}
         />
+      </div>
+      <div className="mt-4 flex justify-center align-middle text-center">
+        <button
+          onClick={resetToDefault}
+          className="rounded bg-purple-600 font-bold text-white hover:bg-red-800 size-max"
+        >
+          Reset
+        </button>
       </div>
     </div>
   );

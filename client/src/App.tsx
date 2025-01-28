@@ -29,7 +29,10 @@ function App() {
   };
 
   const handleMapRefresh = () => {
+
     setRefreshMap(false);
+
+
   };
 
   return (
@@ -44,7 +47,7 @@ function App() {
           />
         </div>
       )}
-      <Map />
+      <Map refreshMap={refreshMap} onRefresh={handleMapRefresh} />
     </div>
   );
 }

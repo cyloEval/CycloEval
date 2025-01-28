@@ -23,8 +23,7 @@ const CoefSlider: React.FC<CoefSliderProps> = ({
         htmlFor="coef-slider"
         className="block text-sm font-medium text-gray-200"
       >
-        Coefficient de couleur:{' '}
-        <span className="font-bold text-white">{value}</span>
+        Red coefficient: <span className="font-bold text-white">{value}</span>
       </label>
       <input
         id="coef-slider"
