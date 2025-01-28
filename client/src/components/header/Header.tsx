@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
   const navigate = useNavigate();
 
   return (
-    <header className="flex h-20 items-center justify-between bg-purple-700 p-4 text-white">
+    <header className="flex h-20 items-center justify-between bg-gray-800 p-4 text-white">
       <div className="h-15 hover:scale-115 flex w-1/6 rounded-sm border border-white transition-transform">
         <img src={logoEtuderecup} className="logo" alt="logo_etude_recup" />
       </div>
@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
         <ContactButton />
         <button
           onClick={() => navigate('/admin')}
-          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+          className="rounded bg-blue-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-800"
         >
           Admin Panel
         </button>

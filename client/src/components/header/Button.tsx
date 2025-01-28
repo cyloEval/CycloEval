@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type ButtonProps = {
   onClick: () => void;
@@ -8,7 +8,7 @@ type ButtonProps = {
 
 const Button: React.FC<ButtonProps> = ({ onClick, children, className }) => (
   <button
-    className={`px-4 py-1 bg-purple-900 text-white border border-dotted border-white rounded-full cursor-pointer hover:scale-115 hover:bg-purple-500 transition-transform ${className}`}
+    className={`hover:scale-115 cursor-pointer rounded-full bg-purple-900 px-4 py-1 text-white transition-transform hover:bg-purple-500 ${className}`}
     onClick={onClick}
   >
     {children}
