@@ -84,7 +84,7 @@ const Map: React.FC = () => {
   const baseMapUrl: string = mapTile[baseMap as keyof typeof mapTile];
 
   return (
-    <div className="relative flex h-[93vh] w-full justify-center text-center align-middle">
+    <div className="lg:h-[93vh relative flex w-full justify-center text-center align-middle sm:h-[85vh] md:h-[93vh]">
       <MapContainer
         ref={mapRef}
         className="map"

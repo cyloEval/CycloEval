@@ -44,9 +44,7 @@ function App() {
           />
         </div>
       )}
-      <div className="h-[93vh]">
-        <Map />
-      </div>
+      <Map />
     </div>
   );
 }
