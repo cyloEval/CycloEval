@@ -19,3 +19,9 @@ server/coverage
 
 *.db
 python/All_e_des_Jacquets-2024-10-14_11-38-12.json
+
+# latex
+*.aux
+*.log
+*.out
+*.pdf
