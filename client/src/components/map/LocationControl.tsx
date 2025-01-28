@@ -1,17 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useMap, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Import marker icons
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import markerIconRetina from 'leaflet/dist/images/marker-icon-2x.png';
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIconRetina,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+// Définir une icône personnalisée pour le marqueur
+const customIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
 const LocationControl: React.FC = () => {
@@ -29,17 +29,24 @@ const LocationControl: React.FC = () => {
     alert('Location not found');
   }, []);
 
+  useEffect(() => {
+    // Nettoyer les listeners quand le composant est démonté
+    return () => {
+      map.off('locationfound', handleLocationFound);
+      map.off('locationerror', handleLocationError);
+    };
+  }, [map, handleLocationFound, handleLocationError]);
+
   const locateUser = () => {
     setIsLocating(true);
+    map.on('locationfound', handleLocationFound);
+    map.on('locationerror', handleLocationError);
     map.locate({
       setView: true,
       maxZoom: 16,
       enableHighAccuracy: true,
     });
   };
-
-  map.on('locationfound', handleLocationFound);
-  map.on('locationerror', handleLocationError);
 
   return (
     <div className="leaflet-bottom leaflet-left">
@@ -62,7 +69,10 @@ const LocationControl: React.FC = () => {
               📍
             </span>
           </button>
-          {position && <Marker position={position}></Marker>}
+          {position && (
+            <Marker position={position} icon={customIcon}>
+            </Marker>
+          )}
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import Header from './components/header/Header';
 import FileUploadMenu from './components/upload/FileUploadMenu';
 import Contact from './components/header/Contact';
 import Contribution from './components/contribution';
-import Map from './components/map/Map'; // Updated import
+import Map from './components/map/Map';
 import Admin from './components/Admin';
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
 
   const handleUploadSuccess = () => {
     setShowUpload(false);
-    setRefreshMap(true); // Trigger map refresh
+    setRefreshMap(true);
   };
 
   const toggleUpload = () => {
@@ -29,26 +29,23 @@ function App() {
   };
 
   const handleMapRefresh = () => {
-    setRefreshMap(false); // Reset the refresh state
+    setRefreshMap(false);
   };
 
   return (
-    <div className="fixed h-screen w-screen overflow-hidden bg-cover bg-center bg-no-repeat">
+    <div className="h-screen overflow-hidden bg-cover bg-center bg-no-repeat">
       <Header onUploadClick={toggleUpload} />
       {showUpload && (
         <div className="fixed inset-0 z-40 bg-black bg-opacity-50">
           <FileUploadMenu
             onCancel={handleCancelUpload}
             onContinue={handleContinueUpload}
-            onUploadSuccess={handleUploadSuccess} // Pass the new prop
+            onUploadSuccess={handleUploadSuccess}
           />
         </div>
       )}
-      <div className="h-full w-full">
-        <Map
-        // onRefresh={handleMapRefresh}
-        // key={refreshMap ? 'refresh' : 'no-refresh'}
-        />
+      <div className="h-[93vh]">
+        <Map />
       </div>
     </div>
   );

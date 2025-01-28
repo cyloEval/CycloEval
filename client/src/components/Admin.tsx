@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  deleteFile,
-  getFiles,
-  resetDatabase,
-  FileResponseShort,
-} from '../lib/api';
+import Button from './header/Button';
 
-const Admin: React.FC = () => {
-  const [fileId, setFileId] = useState<number | null>(null);
-  const [password, setPassword] = useState<string>('');
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [files, setFiles] = useState<FileResponseShort[]>([]);
+const Admin = () => {
+  const [password, setPassword] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [message, setMessage] = useState('');
+  const [files, setFiles] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,53 +17,19 @@ const Admin: React.FC = () => {
 
   const fetchFiles = async () => {
     try {
-      const files = await getFiles();
-      // Trier les fichiers par ordre chronologique décroissant
+      const response = await fetch('/api/files');
+      const files = await response.json();
       const sortedFiles = files.sort(
-        (a, b) =>
-          new Date(b.upload_time).getTime() - new Date(a.upload_time).getTime(),
+        (a, b) => new Date(b.upload_time).getTime() - new Date(a.upload_time).getTime()
       );
       setFiles(sortedFiles);
     } catch (error) {
-      if (error instanceof Error) {
-        if (error instanceof Error) {
-          if (error instanceof Error) {
-            setMessage(`Error: ${error.message}`);
-          } else {
-            setMessage('An unknown error occurred');
-          }
-        } else {
-          setMessage('An unknown error occurred');
-        }
-      } else {
-        setMessage('An unknown error occurred');
-      }
-    }
-  };
-
-  const handleDelete = async (fileId: number) => {
-    try {
-      await deleteFile(fileId);
-      setMessage('File and associated GPS points deleted successfully');
-      fetchFiles(); // Refresh the list of files
-    } catch (error) {
-      setMessage(`Error: ${error}`);
-    }
-  };
-
-  const handleResetDatabase = async () => {
-    try {
-      await resetDatabase();
-      setMessage('Database reset successfully');
-      fetchFiles(); // Refresh the list of files
-    } catch (error) {
-      setMessage(`Error: ${error}`);
+      setMessage('Error fetching files');
     }
   };
 
   const handleLogin = () => {
     if (password === 'pass') {
-      // Replace with a secure method
       setIsAuthenticated(true);
       setMessage('');
     } else {
@@ -78,60 +38,76 @@ const Admin: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      {!isAuthenticated ? (
-        <div className="mx-auto max-w-sm">
-          <h2 className="mb-4 text-2xl">Admin Login</h2>
-          <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mb-4 w-full rounded border border-gray-300 p-2"
-          />
-          <button
-            onClick={handleLogin}
-            className="w-full rounded bg-blue-600 p-2 text-white transition-colors duration-300 hover:bg-blue-800"
-          >
-            Login
-          </button>
-          {message && <p className="mt-4 text-red-500">{message}</p>}
+    <div className="min-h-screen">
+      {/* Header */}
+      <div className="h-14 bg-gray-800 text-white">
+        <div className="container mx-auto px-4">
+          <div className="pl-4 pt-1 text-xl italic">
+            <Button
+              onClick={() => navigate('/')}
+              className="bg-blue-600 hover:bg-blue-800"
+            >
+              Accueil
+            </Button>
+          </div>
+          <p className="mt-[-34px] text-center text-xl italic">
+            Admin Panel
+          </p>
         </div>
-      ) : (
-        <div className="mx-auto max-w-sm">
-          <h2 className="mb-4 text-2xl">Admin Panel</h2>
-          {message && <p className="mt-4 text-red-500">{message}</p>}
-          <button
-            onClick={() => navigate('/')}
-            className="mb-4 w-full rounded bg-blue-600 p-2 text-white transition-colors duration-300 hover:bg-blue-800"
-          >
-            Return to Map
-          </button>
-          <h3 className="mb-4 mt-8 text-xl">Uploaded Files</h3>
-          <ul>
-            {files.map((file) => (
-              <li key={file.id} className="mb-2 flex justify-between">
-                <span>
-                  {file.filename} (Uploaded on:{' '}
-                  {new Date(file.upload_time).toLocaleString()})
-                </span>
-                <button
-                  onClick={() => handleDelete(file.id)}
-                  className="ml-4 rounded bg-red-600 p-1 text-white transition-colors duration-300 hover:bg-red-800"
+      </div>
+
+      {/* Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="mx-auto max-w-3xl rounded-lg bg-white p-8 shadow-lg">
+          {!isAuthenticated ? (
+            <div className="mx-auto max-w-sm">
+              <h2 className="mb-4 text-2xl">Admin Login</h2>
+              <input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mb-4 w-full rounded border border-gray-300 p-2"
+              />
+              <Button
+                onClick={handleLogin}
+                className="w-full bg-blue-600 hover:bg-blue-800"
+              >
+                Login
+              </Button>
+              {message && <p className="mt-4 text-red-500">{message}</p>}
+            </div>
+          ) : (
+            <div>
+              <h2 className="mb-4 text-2xl">Fichiers uploadés</h2>
+              {message && <p className="mt-4 text-red-500">{message}</p>}
+              <ul className="space-y-2">
+                {files.map((file) => (
+                  <li key={file.id} className="flex justify-between items-center">
+                    <span>
+                      {file.filename} (Uploaded: {new Date(file.upload_time).toLocaleString()})
+                    </span>
+                    <Button
+                      onClick={() => handleDelete(file.id)}
+                      className="bg-red-600 hover:bg-red-800"
+                    >
+                      Delete
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <Button
+                  onClick={handleResetDatabase}
+                  className="w-full bg-red-600 hover:bg-red-800"
                 >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button
-            onClick={handleResetDatabase}
-            className="mt-4 w-full rounded bg-red-600 p-2 text-white transition-colors duration-300 hover:bg-red-800"
-          >
-            Reset Database
-          </button>
+                  Reset Database
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

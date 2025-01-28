@@ -2,6 +2,7 @@ import ContactButton from './ContactButton';
 import ImportFileButton from './ImportFileButton';
 import logoEtuderecup from '/logoEtudeRecup.jpg';
 import ContributionButton from './ContributionButton';
+import AdminButton from "./AdminButton.tsx";
 import { useNavigate } from 'react-router-dom';
 
 type HeaderProps = {
@@ -23,13 +24,8 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
       <div className="mr-4 flex items-center space-x-4">
         <ContributionButton />
         <ImportFileButton handleUploadClick={onUploadClick} />
+        <AdminButton />
         <ContactButton />
-        <button
-          onClick={() => navigate('/admin')}
-          className="rounded bg-blue-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-800"
-        >
-          Admin Panel
-        </button>
       </div>
     </header>
   );
