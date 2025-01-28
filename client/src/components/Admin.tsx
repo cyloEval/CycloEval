@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   deleteFile,
   getFiles,
@@ -12,6 +13,7 @@ const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [files, setFiles] = useState<FileResponseShort[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,7 +31,7 @@ const Admin: React.FC = () => {
       );
       setFiles(sortedFiles);
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
+      setMessage(`Error: ${error}`);
     }
   };
 
@@ -39,7 +41,7 @@ const Admin: React.FC = () => {
       setMessage('File and associated GPS points deleted successfully');
       fetchFiles(); // Refresh the list of files
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
+      setMessage(`Error: ${error}`);
     }
   };
 
@@ -49,12 +51,12 @@ const Admin: React.FC = () => {
       setMessage('Database reset successfully');
       fetchFiles(); // Refresh the list of files
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
+      setMessage(`Error: ${error}`);
     }
   };
 
   const handleLogin = () => {
-    if (password === 'adminpassword') {
+    if (password === 'pass') {
       // Replace with a secure method
       setIsAuthenticated(true);
     } else {
@@ -86,6 +88,12 @@ const Admin: React.FC = () => {
         <div className="mx-auto max-w-sm">
           <h2 className="mb-4 text-2xl">Admin Panel</h2>
           {message && <p className="mt-4 text-red-500">{message}</p>}
+          <button
+            onClick={() => navigate('/')}
+            className="mb-4 w-full rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+          >
+            Return to Map
+          </button>
           <h3 className="mb-4 mt-8 text-xl">Uploaded Files</h3>
           <ul>
             {files.map((file) => (
