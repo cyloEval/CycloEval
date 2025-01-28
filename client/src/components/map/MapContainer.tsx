@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import MapComponent, { MapComponentProps } from './Map';
+import Map, { MapProps } from './Map';
 import MapFilter from './MapFilter';
 import { getDataFromApi } from '../../lib/api';
 
 const MapContainer: React.FC<{ onRefresh: () => void }> = ({ onRefresh }) => {
-  const [GPSPoints, setGPSPoints] = useState<MapComponentProps['GPSPoints']>(
+  const [GPSPoints, setGPSPoints] = useState<MapProps['GPSPoints']>(
     [],
   );
   const [coef, setCoef] = useState<number>(5);
@@ -63,7 +63,7 @@ const MapContainer: React.FC<{ onRefresh: () => void }> = ({ onRefresh }) => {
 
   return (
     <div className="relative flex w-full items-center justify-center">
-      <MapComponent
+      <Map
         GPSPoints={GPSPoints}
         coef={coef}
         baseMap={baseMap}

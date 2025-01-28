@@ -16,7 +16,7 @@ type GPSPointsType = {
   timestamp: string;
 };
 
-export type MapComponentProps = {
+export type MapProps = {
   GPSPoints: GPSPointsType[];
   coef: number;
   baseMap: string;
@@ -25,7 +25,7 @@ export type MapComponentProps = {
   dateRange: { startDate: string; endDate: string };
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({
+const Map: React.FC<MapProps> = ({
   GPSPoints,
   coef,
   baseMap,
@@ -113,4 +113,4 @@ const MapComponent: React.FC<MapComponentProps> = ({
   );
 };
 
-export default MapComponent;
+export default Map;

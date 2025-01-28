@@ -71,6 +71,7 @@ const Admin: React.FC = () => {
     if (password === 'pass') {
       // Replace with a secure method
       setIsAuthenticated(true);
+      setMessage('');
     } else {
       setMessage('Incorrect password');
     }

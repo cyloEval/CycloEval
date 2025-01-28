@@ -41,7 +41,7 @@ const LocationControl = () => {
   );
 
   return (
-    <div className="leaflet-top leaflet-right">
+    <div className="leaflet-bottom leaflet-left">
       <div className="leaflet-control leaflet-bar">
         <button
           onClick={locateUser}
