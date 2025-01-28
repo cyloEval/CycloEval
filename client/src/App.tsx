@@ -4,7 +4,7 @@ import Header from './components/header/Header';
 import FileUploadMenu from './components/upload/FileUploadMenu';
 import Contact from './components/header/Contact';
 import Contribution from './components/contribution';
-import MapContainer from './components/map/MapContainer';
+import Map from './components/map/Map'; // Updated import
 import Admin from './components/Admin';
 
 function App() {
@@ -44,10 +44,10 @@ function App() {
           />
         </div>
       )}
-      <div className='h-full" w-full'>
-        <MapContainer
-          onRefresh={handleMapRefresh}
-          key={refreshMap ? 'refresh' : 'no-refresh'}
+      <div className="h-full w-full">
+        <Map
+        // onRefresh={handleMapRefresh}
+        // key={refreshMap ? 'refresh' : 'no-refresh'}
         />
       </div>
     </div>

@@ -33,27 +33,31 @@ const Contribution = () => {
           </p>
           <ol className="mt-4 list-decimal pl-8">
             <li>Téléchargez et installez l'application Sensor Logger.</li>
-            <li>Enregistrez vos données en utilisant l'application.</li>
+            <li>
+              Enregistrez vos données en utilisant l'application.
+              <img
+                src="1_sensorLogger.jpg"
+                className="mt-2 rounded-lg shadow-md"
+              />
+              <img
+                src="2_sensorLogger.jpg"
+                className="mt-2 rounded-lg shadow-md"
+              />
+            </li>
             <li>Exportez les données au format JSON.</li>
-            <li>Utilisez le bouton ci-dessous pour importer vos données.</li>
+            <li>importer vos données depuis la map.</li>
           </ol>
         </div>
 
         {/* Action Buttons */}
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-wrap justify-center gap-8">
-            <a
-              href="https://play.google.com/store/apps/details?id=com.kelvin.sensorapp&hl=fr&pli=1"
-              className="w-full max-w-xs transform cursor-pointer rounded-lg border-2 border-blue-600 bg-white p-3.5 text-center italic transition duration-300 ease-in-out hover:bg-gray-100 sm:w-auto sm:min-w-[200px]"
+            <Button
+              onClick={() => navigate('/')}
+              className="bg-green-600 hover:bg-green-800"
             >
-              Lien vers Sensor Logger
-            </a>
-            <button
-              className="w-full max-w-xs transform cursor-pointer rounded-lg border-2 border-blue-600 bg-white p-3.5 text-center italic transition duration-300 ease-in-out hover:bg-gray-100 sm:w-auto sm:min-w-[200px]"
-              onClick={() => navigate('/import')}
-            >
-              Importer un JSON
-            </button>
+              Importer des données
+            </Button>
           </div>
         </div>
       </div>

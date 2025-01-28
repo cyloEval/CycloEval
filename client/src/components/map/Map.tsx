@@ -1,7 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Circle, Tooltip } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import LocationControl from './LocationControl';
 import MapEvents from './MapEvents';
+import MapFilter from './MapConfig';
+import FilterToggleButton from './filters/FilterToggleButton';
+import { getDataFromApi } from '../../lib/api';
 import { getColor, getOpacity, getRadius } from './utils';
 
 type GPSPointsType = {
@@ -25,16 +29,40 @@ export type MapProps = {
   dateRange: { startDate: string; endDate: string };
 };
 
-const Map: React.FC<MapProps> = ({
-  GPSPoints,
-  coef,
-  baseMap,
-  zAccel,
-  accuracy,
-  dateRange,
-}) => {
+const Map: React.FC = () => {
+  const [GPSPoints, setGPSPoints] = useState<MapProps['GPSPoints']>([]);
+  const [coef, setCoef] = useState<number>(5);
+  const [baseMap, setBaseMap] = useState<string>('default');
+  const [zAccel, setZAccel] = useState<number>(1);
+  const [accuracy, setAccuracy] = useState<number>(1);
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({ startDate: '', endDate: '' });
+  const [showFilters, setShowFilters] = useState<boolean>(true);
   const mapRef = useRef<L.Map | null>(null);
   const [zoomLevel, setZoomLevel] = useState(12);
+
+  const fetchData = async () => {
+    try {
+      const data = await getDataFromApi('GPSPoints');
+      setGPSPoints(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleCoefChange = (coef: number) => setCoef(coef);
+  const handleBaseMapChange = (baseMap: string) => setBaseMap(baseMap);
+  const handleZAccelChange = (zAccel: number) => setZAccel(zAccel);
+  const handleAccuracyChange = (accuracy: number) => setAccuracy(accuracy);
+  const handleDateRangeChange = (startDate: string, endDate: string) =>
+    setDateRange({ startDate, endDate });
+  const toggleFilters = () => setShowFilters(!showFilters);
 
   const filteredPoints = GPSPoints.filter((point) => {
     if (point.zAccel < zAccel) return false;
@@ -56,7 +84,7 @@ const Map: React.FC<MapProps> = ({
   const baseMapUrl: string = mapTile[baseMap as keyof typeof mapTile];
 
   return (
-    <div className="flex h-[92vh] w-full justify-center text-center align-middle">
+    <div className="relative flex h-[93vh] w-full justify-center text-center align-middle">
       <MapContainer
         ref={mapRef}
         className="map"
@@ -109,6 +137,28 @@ const Map: React.FC<MapProps> = ({
           </React.Fragment>
         ))}
       </MapContainer>
+
+      <div className="absolute bottom-24 left-14 z-30">
+        {!showFilters && (
+          <FilterToggleButton
+            onClick={toggleFilters}
+            showFilters={showFilters}
+          />
+        )}
+      </div>
+
+      <div
+        className={`absolute bottom-24 left-24 z-30 transform rounded-xl p-4 transition-all duration-300 ${showFilters ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+      >
+        <FilterToggleButton onClick={toggleFilters} showFilters={showFilters} />
+        <MapFilter
+          onCoefChange={handleCoefChange}
+          onBaseMapChange={handleBaseMapChange}
+          onZAccelChange={handleZAccelChange}
+          onAccuracyChange={handleAccuracyChange}
+          onDateRangeChange={handleDateRangeChange}
+        />
+      </div>
     </div>
   );
 };
