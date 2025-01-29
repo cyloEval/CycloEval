@@ -35,7 +35,6 @@ const Contact = () => {
               nicolas.marie-magdelaine@enseirb-matmeca.fr
             </a>
           </div>
-          </div>
         </div>
       </div>
     </div>
