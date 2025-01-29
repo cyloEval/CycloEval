@@ -35,23 +35,6 @@ const Contact = () => {
               nicolas.marie-magdelaine@enseirb-matmeca.fr
             </a>
           </div>
-
-          <h2 className="mb-6 text-2xl font-bold">Structures partenaires</h2>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold">Etu'Recup</h3>
-              <p className="text-gray-600">
-                Recyclerie et maison du vélo du campus
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold">WeVii Innovation</h3>
-              <p className="text-gray-600">
-                Entreprise de Service Numérique Bordelaise depuis 2020
-              </p>
-            </div>
           </div>
         </div>
       </div>
