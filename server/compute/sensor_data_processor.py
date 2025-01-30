@@ -1,8 +1,6 @@
 import numpy as np
 from scipy.spatial.transform import Rotation
 from server.models import SensorData, Accelerometer, Orientation, Metadata, Location
-from pydantic import BaseModel
-from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)

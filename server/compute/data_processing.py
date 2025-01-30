@@ -1,6 +1,4 @@
-from sqlalchemy.orm import Session
-from server.models import GPSPointCreate,  SensorData, GPSPointResponse
-from server.crud import create_gps_point
+from server.models import GPSPointCreate,  SensorData
 from .sensor_data_processor import SensorDataProcessor
 from .high_pass_filter import HighPassFilter
 from .gps_point_processor import GPSPointProcessor

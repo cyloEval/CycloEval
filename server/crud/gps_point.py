@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from server.models.table import GPSPoint
 from server.models import GPSPointCreate, GPSPointResponse
-from datetime import datetime
+
 
 
 
