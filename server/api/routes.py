@@ -1,17 +1,15 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import timedelta, datetime
-from jose import JWTError, jwt
 import json
 from pydantic import BaseModel
 import traceback
 import os
-import base64
+
 
 from server.compute import process_gps_points
-from server.crud import create_file, create_gps_point, get_all_gps_points, get_all_files, delete_gps_points_by_file, delete_file_by_id
+from server.crud import create_file, create_gps_point, get_all_gps_points, get_all_files, delete_gps_points_by_file, delete_file_by_id, reset_database
 from server.models import FileCreate, GPSPointCreate, GPSPointResponse, FileCreate, FileResponseShort
 from server.core.database import get_db
 
