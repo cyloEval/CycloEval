@@ -24,13 +24,21 @@ CycloEval est un projet visant à analyser les données de capteurs provenant de
    cd client
    ```
 
-2. Install the dependencies:
+2. Create .env
+
+   ```
+   VITE_API_URL=http://localhost:8000
+
+   ```
+
+3. Install the dependencies:
 
    ```shell
    npm install
    ```
 
-3. Start the development server:
+4. Start the development server:
+
    ```shell
    npm run dev
    ```
